@@ -48,7 +48,10 @@ public class Client {
 	    	System.out.println("lala");
 	    	me.setWannaPlay(5);
 	    	System.out.println("Je veux jouer la carte " + me.getWannaPlay() + " et elle est à " + me.getThisCardState(me.getWannaPlay()));
+	    	comp.newGame(6);
+	    	System.out.println("lolo");
 	    	comp.joinGame(me);
+	    	System.out.println("lulu");
 	    	comp.playCard(me);
 	    	System.out.println("Je peux désormais utiliser le " + me.getWannaPlay() + " : " + me.getThisCardState(me.getWannaPlay()));
 //	    	comp.shutDown();

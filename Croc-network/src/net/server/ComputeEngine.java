@@ -5,12 +5,21 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
-import net.headers.GameStateInterface;
+import engine.models.Game;
+import engine.models.PirateColor;
+import engine.models.Player;
 import net.headers.ComputeInterface;
+import net.headers.GameStateInterface;
 
 public class ComputeEngine implements ComputeInterface {
 
+	private static int maxPlayers = 7;
 	private int nbPlayers = 0;
+	private int nbPlayersCo = 0;
+	private int nbBot = 0;
+	private int nbCard;
+	private Player players[] = new Player[maxPlayers];
+	private Game game;
 	/** Constructor
 	 * 
 	 */
@@ -42,12 +51,78 @@ public class ComputeEngine implements ComputeInterface {
 	
 	public void newGame(int nbPlayers) {
 		System.out.println("Ouverture d'une partie à " + nbPlayers + " joueurs.");
+		setNbPlayers(nbPlayers);
+		setNbCard();
 	}
 	
-	public GameStateInterface joinGame(GameStateInterface client) {
-		nbPlayers+=1;
-		System.out.println("On est " + nbPlayers + " joueurs");
+	public void configureGame() {
+		game = new Game(players, nbPlayers);
+	}
+	
+	public boolean addBotPlayer() {
+		if (nbBot + nbPlayersCo == nbPlayers) {
+			System.out.println("Toutes les places sont prises");
+			return false;
+		}
+//		int cardAmount, String name_, PirateColor color, Boolean isBot_
+		Player p = new Player (getNbCard(), "Bot", PirateColor.BLACK, true);
+		for (int i = 0; i < nbPlayers; i++) {
+			if (players[i] == null) {
+				players[i] = p;
+				nbBot += 1;
+				if (nbBot + nbPlayersCo == nbPlayers) {
+					configureGame();
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public GameStateInterface joinGame(GameStateInterface client) throws RemoteException {
+		if (nbBot + nbPlayersCo == nbPlayers) {
+			System.out.println("Toutes les places sont prises");
+		} else {
+	//		int cardAmount, String name_, PirateColor color, Boolean isBot_
+			Player p = new Player (getNbCard(), client.getClientName(), client.getClientColor(), false);
+			for (int i = 0; i < nbPlayers; i++) {
+				if (players[i] == null) {
+					players[i] = p;
+					nbPlayersCo += 1;
+					System.out.println("On est " + nbPlayersCo + " joueurs sur " + nbPlayers);
+					client.update();
+					break;
+				}
+			}
+		}
+//		System.out.println("Waiting players");
+//		while(nbBot + nbPlayersCo < nbPlayers) {
+////			sleep(10);
+//		}
+		if (nbBot + nbPlayersCo == nbPlayers) {
+			configureGame();
+		}
+		client.update();
 		return client;
+	}
+	
+	public int getNbPlayers() {
+		return nbPlayers;
+	}
+
+	public void setNbPlayers(int nbPlayers) {
+		this.nbPlayers = nbPlayers;
+	}
+	
+	public int getNbCard() {
+		return nbCard;
+	}
+
+	/** Define how many cards has each player depending on nbPlayers
+	 *  TODO implement true rules
+	 */
+	private void setNbCard() {
+		this.nbCard = nbPlayers;
 	}
 	
 	/** Open server and wait for instructions

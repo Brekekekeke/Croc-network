@@ -3,6 +3,8 @@ package net.headers;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+import engine.models.PirateColor;
+
 /**
  * @author tristan
  *
@@ -40,4 +42,10 @@ public interface GameStateInterface extends Remote {
 	 * @throws RemoteException
 	 */
 	public int getWannaPlay() throws RemoteException;
+
+	public String getClientName() throws RemoteException;
+
+	public PirateColor getClientColor() throws RemoteException;
+
+	public void update() throws RemoteException;
 }

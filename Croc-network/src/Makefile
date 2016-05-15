@@ -13,20 +13,24 @@ PORTSERVEUR=1351
 
 tryAgain: clear build startServer
 
-build: buildHeaders buildServer buildClient
+build: buildModel buildHeaders buildServer buildClient
 
+buildModel:
+	javac engine/models/*.java
+	jar cvf $(TESTENV)/models.jar engine/models/*.class
+	
 buildHeaders:
 	javac $(NET)/$(HEAD)/ComputeInterface.java $(NET)/$(HEAD)/GameStateInterface.java 
 	mkdir $(RUNHEAD)
 	jar cvf $(RUNHEAD)/computeInterface.jar $(NET)/$(HEAD)/*.class
 
 buildServer:
-	javac -cp $(RUNHEAD)/computeInterface.jar $(NET)/$(SERV)/ComputeEngine.java
+	javac -cp $(TESTENV)/models.jar:$(RUNHEAD)/computeInterface.jar $(NET)/$(SERV)/ComputeEngine.java
 	mkdir $(RUNSERV)
 	jar cvf $(RUNSERV)/server.jar $(NET)/$(SERV)/*.class
 	
 buildClient:
-	javac -cp $(RUNHEAD)/computeInterface.jar $(NET)/$(CLIE)/Client.java $(NET)/$(CLIE)/GameStateImpl.java
+	javac -cp  $(TESTENV)/models.jar:$(RUNHEAD)/computeInterface.jar $(NET)/$(CLIE)/Client.java $(NET)/$(CLIE)/GameStateImpl.java
 	mkdir $(RUNCLIE)
 	jar cvfm $(RUNCLIE)/client.jar $(CONFDIR)/Manifest.txt $(NET)/$(CLIE)/*.class
 	#mkdir $(CLIENTPUBLIC)
@@ -44,7 +48,7 @@ startServer:
 	#-Djava.rmi.server.hostname=$(TESTENV)/publicserver
 	
 startClient:
-	java -cp $(RUNCLIE)/client.jar:$(RUNHEAD)/computeInterface.jar -Djava.rmi.server.codebase=file:$(CLIENTPUBLIC)/classes/client/ $(NET).client.Client $(PORTSERVEUR)
+	java -cp  $(TESTENV)/models.jar:$(RUNCLIE)/client.jar:$(RUNHEAD)/computeInterface.jar -Djava.rmi.server.codebase=file:$(CLIENTPUBLIC)/classes/client/ $(NET).client.Client $(PORTSERVEUR)
 	#java -cp neXt/client:$(TESTENV)/computeInterface.jar -Djava.rmi.server.codebase=$(CLIENTPUBLIC)/classes/client/ -Djava.security.policy=exec/pol/client.policy $(CLIE)/Client.class 5
 	#$(TESTENV)/publicserver
 

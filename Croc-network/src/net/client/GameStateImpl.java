@@ -3,6 +3,7 @@ package net.client;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+import engine.models.PirateColor;
 import net.headers.GameStateInterface;
 
 /**
@@ -88,5 +89,23 @@ public class GameStateImpl extends UnicastRemoteObject implements GameStateInter
 	 */
 	public boolean getThisCardState(int numCard) throws RemoteException {
 		return hand[numCard];
+	}
+
+	@Override
+	public String getClientName() throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PirateColor getClientColor() throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void update() throws RemoteException {
+		// TODO Auto-generated method stub
+		
 	}
 }
