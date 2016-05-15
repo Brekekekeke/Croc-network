@@ -1,0 +1,3 @@
+grant codeBase "file:/home/tristan/workspace/Croc-network/src/neXt/client/" {
+    permission java.security.AllPermission;
+};
