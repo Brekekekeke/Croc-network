@@ -49,6 +49,7 @@ public class ComputeEngine implements ComputeInterface {
 		System.out.println("On est " + nbPlayers + " joueurs");
 		return client;
 	}
+	
 	/** Open server and wait for instructions
 	 * @param args
 	 */
@@ -58,10 +59,10 @@ public class ComputeEngine implements ComputeInterface {
 //	      System.setSecurityManager(new SecurityManager());
 //	    }
 	    try {
-	    	int numPort = 1349;
+	    	int numPort = Integer.parseInt(args[0]);
 	    	String name = "Compute";
 	    	ComputeInterface engine = new ComputeEngine();
-	    	ComputeInterface stub = (ComputeInterface) UnicastRemoteObject.exportObject(engine, 0);
+	    	ComputeInterface stub = (ComputeInterface) UnicastRemoteObject.exportObject(engine, numPort);
 	    	Registry registry = LocateRegistry.createRegistry(numPort); // default local 1099
 	    	registry.rebind(name, stub);
 	    } catch (Exception e) {

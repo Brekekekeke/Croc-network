@@ -9,7 +9,7 @@ RUNSERV=$(TESTENV)/server
 RUNCLIE=$(TESTENV)/client
 CLIENTPUBLIC=$(TESTENV)/public
 CONFDIR=$(TESTENV)/config
-PORTSERVEUR=1346
+PORTSERVEUR=1351
 
 tryAgain: clear build startServer
 
@@ -40,11 +40,11 @@ startRegistry:
 startServer: 
 	#startRegistry
 	#mkdir $(TESTENV)/publicserver
-	java -Djava.rmi.server.codebase=file:$(RUNHEAD)/computeInterface.jar -Djava.security.policy=$(CONFDIR)/client.policy $(NET).$(SERV).ComputeEngine
+	java -Djava.rmi.server.codebase=file:$(RUNHEAD)/computeInterface.jar -Djava.security.policy=$(CONFDIR)/client.policy $(NET).$(SERV).ComputeEngine $(PORTSERVEUR)
 	#-Djava.rmi.server.hostname=$(TESTENV)/publicserver
 	
 startClient:
-	java -cp $(RUNCLIE)/client.jar:$(RUNHEAD)/computeInterface.jar -Djava.rmi.server.codebase=file:$(CLIENTPUBLIC)/classes/client/ $(NET).client.Client 5
+	java -cp $(RUNCLIE)/client.jar:$(RUNHEAD)/computeInterface.jar -Djava.rmi.server.codebase=file:$(CLIENTPUBLIC)/classes/client/ $(NET).client.Client $(PORTSERVEUR)
 	#java -cp neXt/client:$(TESTENV)/computeInterface.jar -Djava.rmi.server.codebase=$(CLIENTPUBLIC)/classes/client/ -Djava.security.policy=exec/pol/client.policy $(CLIE)/Client.class 5
 	#$(TESTENV)/publicserver
 

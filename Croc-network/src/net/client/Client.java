@@ -1,5 +1,6 @@
 package net.client;
 
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -34,16 +35,17 @@ public class Client {
 //	      System.setSecurityManager(new SecurityManager());
 //	    }
 		
-		int serverPort = 1349;
+		int serverPort = Integer.parseInt(args[0]);
 
 		initMe();
 		
-		System.out.println("Starting ComputeTruc");
+		System.out.println("Starting Client");
 	    try {
-	    	String name = "Compute";
-	    	Registry registry = LocateRegistry.getRegistry(serverPort);
-//	    	Registry r = new Registry().connect("localhost", serverPort);
-	    	ComputeInterface comp = (ComputeInterface) registry.lookup(name);
+	    	ComputeInterface comp = connect("", serverPort);
+	    	
+	    	
+	    	
+	    	System.out.println("lala");
 	    	me.setWannaPlay(5);
 	    	System.out.println("Je veux jouer la carte " + me.getWannaPlay() + " et elle est à " + me.getThisCardState(me.getWannaPlay()));
 	    	comp.joinGame(me);
@@ -56,6 +58,17 @@ public class Client {
 	    	System.err.println("ComputeCroc exception");
 	    	e.printStackTrace();
 	    }
+	}
+	
+	public static ComputeInterface connect(String host, int serverPort) throws RemoteException, NotBoundException {
+		String name = "Compute";
+		System.out.println("bobo va connecter sur " + serverPort);
+    	Registry registry = LocateRegistry.getRegistry(serverPort);
+    	System.out.println("baba");
+//    	Registry r = new Registry().connect("localhost", serverPort);
+    	ComputeInterface comp = (ComputeInterface) registry.lookup(name);
+    	System.out.println("bibi");
+    	return comp;
 	}
 
 }
