@@ -34,12 +34,12 @@ public class Client {
 //	    if (System.getSecurityManager() == null) {
 //	      System.setSecurityManager(new SecurityManager());
 //	    }
+		System.out.println("---Starting Client---");
 		
 		int serverPort = Integer.parseInt(args[0]);
 
 		initMe();
 		
-		System.out.println("Starting Client");
 	    try {
 	    	ComputeInterface comp = connect("", serverPort);
 	    	

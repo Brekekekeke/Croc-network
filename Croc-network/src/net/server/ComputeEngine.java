@@ -129,7 +129,7 @@ public class ComputeEngine implements ComputeInterface {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println("launched ComputeEngine");
+		System.out.println("---Launched ComputeEngine---");
 //	    if (System.getSecurityManager() == null) {
 //	      System.setSecurityManager(new SecurityManager());
 //	    }
