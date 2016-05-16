@@ -31,7 +31,7 @@ buildServer:
 	
 buildClient:
 	javac -cp  $(TESTENV)/models.jar:$(RUNHEAD)/computeInterface.jar $(NET)/$(CLIE)/Client.java $(NET)/$(CLIE)/GameStateImpl.java
-	mkdir $(RUNCLIE)
+	mkdir $(RUNCLIE) || true
 	jar cvfm $(RUNCLIE)/client.jar $(CONFDIR)/Manifest.txt $(NET)/$(CLIE)/*.class
 	#mkdir $(CLIENTPUBLIC)
 	#mkdir $(CLIENTPUBLIC)/classes

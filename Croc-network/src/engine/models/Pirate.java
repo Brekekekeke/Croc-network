@@ -56,32 +56,29 @@ public class Pirate {
 	}
 	
 	public boolean isAlive(){
-		if(limbCount > 0){
-			return true;
-		}
-		
-		return false;
+		return (limbCount > 0);
 	}
 	
-	public String getColor(){
-		switch(color){
-		case WHITE:
-			return "white";
-		case RED:
-			return "red";
-		case GREEN:
-			return "green";
-		case PURPLE:
-			return "purple";
-		case ORANGE:
-			return "orange";
-		case YELLOW:
-			return "yellow";
-		case BLACK:
-			return "black";
-		default:
-			return "undefined color";
-		}
+	public PirateColor getColor(){
+		return color;
+//		switch(color){
+//		case WHITE:
+//			return "white";
+//		case RED:
+//			return "red";
+//		case GREEN:
+//			return "green";
+//		case PURPLE:
+//			return "purple";
+//		case ORANGE:
+//			return "orange";
+//		case YELLOW:
+//			return "yellow";
+//		case BLACK:
+//			return "black";
+//		default:
+//			return "undefined color";
+//		}
 	}
 	
 	public boolean popLeftLeg(){

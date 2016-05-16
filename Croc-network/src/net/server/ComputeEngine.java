@@ -31,22 +31,35 @@ public class ComputeEngine implements ComputeInterface {
 	 * @see neXt.compute.Compute#playCard(neXt.compute.CallBack)
 	 */
 	@Override
-	public void playCard(GameStateInterface client) throws RemoteException{
+	public boolean playCard(GameStateInterface client) throws RemoteException{
 		try {
-			System.out.println("Le client demande à jouer la carte " + client.getWannaPlay());
-			client.setCard(client.getWannaPlay(), false);
+			System.out.println("Le client demande à jouer la carte " + client.getGardToPlay());
+			if (canPlay(client.getGardToPlay())) {
+				client.setLastPlayedCard(client.getGardToPlay());
+				//TODO enregistrer l'info;
+				return true;
+			} else {
+				System.out.println("Pas possible de jouer cette carte");
+				return false;
+			}
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return false;
 	}
 	
+	private boolean canPlay(int gardToPlay) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	/* (non-Javadoc)
 	 * @see neXt.compute.Compute#shutDown()
 	 */
 	public void shutDown() {
 		System.out.println("On m'a demandé d'arreter !");
-		System.exit(0);;
+		System.exit(0);
 	}
 	
 	public void newGame(int nbPlayers) {
@@ -79,18 +92,20 @@ public class ComputeEngine implements ComputeInterface {
 		return false;
 	}
 	
-	public GameStateInterface joinGame(GameStateInterface client) throws RemoteException {
+	public GameStateInterface joinGame(GameStateInterface client, String expectedName, PirateColor expectedColor) throws RemoteException {
 		if (nbBot + nbPlayersCo == nbPlayers) {
 			System.out.println("Toutes les places sont prises");
+		} else if (alreadyUsedName(expectedName)) {
+			System.out.println("Ce nom est déjà pris");
+		} else if (alreadyUsedColor(expectedColor)) {
+			System.out.println("Cette couleur est prise");
 		} else {
-	//		int cardAmount, String name_, PirateColor color, Boolean isBot_
 			Player p = new Player (getNbCard(), client.getClientName(), client.getClientColor(), false);
 			for (int i = 0; i < nbPlayers; i++) {
 				if (players[i] == null) {
 					players[i] = p;
 					nbPlayersCo += 1;
 					System.out.println("On est " + nbPlayersCo + " joueurs sur " + nbPlayers);
-					client.update();
 					break;
 				}
 			}
@@ -102,10 +117,20 @@ public class ComputeEngine implements ComputeInterface {
 		if (nbBot + nbPlayersCo == nbPlayers) {
 			configureGame();
 		}
-		client.update();
+		// TODO Update le client
 		return client;
 	}
 	
+	private boolean alreadyUsedColor(PirateColor expectedColor) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	private boolean alreadyUsedName(String expectedName) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	public int getNbPlayers() {
 		return nbPlayers;
 	}
@@ -144,5 +169,11 @@ public class ComputeEngine implements ComputeInterface {
 	    	System.err.println("ComputeEngine exception");
 	    	e.printStackTrace();
 	    }
+	}
+
+	@Override
+	public GameStateInterface quitGame(GameStateInterface client) throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+import engine.models.PirateColor;
 import net.headers.ComputeInterface;
 
 /**
@@ -17,13 +18,13 @@ import net.headers.ComputeInterface;
  */
 public class Client {
 	
-	public static GameStateImpl me;
+	public static GameStateImpl gameState;
 	
 	/** Initialize callBack
 	 * @throws RemoteException
 	 */
-	public static void initMe() throws RemoteException {
-		me = new GameStateImpl();
+	public static void init() throws RemoteException {
+		gameState = new GameStateImpl();
 	}
 	
 	/** Connect to server, manipulate myself and asking things to the server.
@@ -38,22 +39,17 @@ public class Client {
 		
 		int serverPort = Integer.parseInt(args[0]);
 
-		initMe();
-		
+		init();
 	    try {
 	    	ComputeInterface comp = connect("", serverPort);
 	    	
+//	    	comp.newGame(5);
+	    	comp.joinGame(gameState, "a name", PirateColor.BLACK);
 	    	
+	    	gameState.setCardToPlay(6);
 	    	
-	    	System.out.println("lala");
-	    	me.setWannaPlay(5);
-	    	System.out.println("Je veux jouer la carte " + me.getWannaPlay() + " et elle est à " + me.getThisCardState(me.getWannaPlay()));
-	    	comp.newGame(6);
-	    	System.out.println("lolo");
-	    	comp.joinGame(me);
-	    	System.out.println("lulu");
-	    	comp.playCard(me);
-	    	System.out.println("Je peux désormais utiliser le " + me.getWannaPlay() + " : " + me.getThisCardState(me.getWannaPlay()));
+	    	comp.playCard(gameState);
+	    	
 //	    	comp.shutDown();
 //	    	System.out.println("J'ai coupé le serveur");
 	    	
@@ -61,6 +57,7 @@ public class Client {
 	    	System.err.println("ComputeCroc exception");
 	    	e.printStackTrace();
 	    }
+	    System.out.println("~~~Fin client~~~");
 	}
 	
 	public static ComputeInterface connect(String host, int serverPort) throws RemoteException, NotBoundException {

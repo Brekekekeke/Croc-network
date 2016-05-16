@@ -1,6 +1,5 @@
 package engine.models;
 
-
 /**
  * Hold all data used or linked to a player
  * @author sykefu
@@ -31,5 +30,13 @@ public class Player {
 		hasLost = false;
 		isBot = isBot_;
 	}
-	//TODO: playcard, recoverhand, loselimb || mostly done in pirates
+	
+	public boolean[] getCards(int cardAmount) {
+		boolean result[] = new boolean[cardAmount];
+		for (int i = 0; i < cardAmount; i ++) {
+			result[i] = cards[i].isInHand(); 
+		}
+		return result;
+	}
+	//TODO: recoverhand, loselimb || mostly done in pirates
 }
