@@ -10,6 +10,7 @@ import engine.models.PirateColor;
 import engine.models.Player;
 import net.headers.ComputeInterface;
 import net.headers.GameStateInterface;
+import net.headers.ServerStep;
 
 public class ComputeEngine implements ComputeInterface {
 
@@ -20,6 +21,8 @@ public class ComputeEngine implements ComputeInterface {
 	private int nbCard;
 	private Player players[] = new Player[maxPlayers];
 	private Game game;
+	private ServerStep myStep;
+	
 	/** Constructor
 	 * 
 	 */
@@ -150,6 +153,21 @@ public class ComputeEngine implements ComputeInterface {
 		this.nbCard = nbPlayers;
 	}
 	
+	@Override
+	public GameStateInterface quitGame(GameStateInterface client) throws RemoteException {
+		// TODO Auto-generated method stub
+		return client;
+	}
+
+	@Override
+	public GameStateInterface getServerStep(GameStateInterface client) throws RemoteException {
+		// TODO Auto-generated method stub
+		client.setStep(myStep);
+		return client;
+	}
+	
+	
+	
 	/** Open server and wait for instructions
 	 * @param args
 	 */
@@ -169,11 +187,5 @@ public class ComputeEngine implements ComputeInterface {
 	    	System.err.println("ComputeEngine exception");
 	    	e.printStackTrace();
 	    }
-	}
-
-	@Override
-	public GameStateInterface quitGame(GameStateInterface client) throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

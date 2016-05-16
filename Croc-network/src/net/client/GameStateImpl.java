@@ -6,7 +6,7 @@ import java.rmi.server.UnicastRemoteObject;
 import engine.models.PirateColor;
 import engine.models.Player;
 import net.headers.GameStateInterface;
-import net.headers.GameStep;
+import net.headers.ServerStep;
 
 /**
  * @author tristan
@@ -74,13 +74,13 @@ public class GameStateImpl extends UnicastRemoteObject implements GameStateInter
 	}
 
 //	@Override
-	public GameStep getStep() throws RemoteException {
+	public ServerStep getStep() throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void setStep(GameStep step) throws RemoteException {
+	public void setStep(ServerStep step) throws RemoteException {
 		// TODO Auto-generated method stub
 		
 	}

@@ -34,6 +34,13 @@ public interface ComputeInterface extends Remote {
 	 */
 	public GameStateInterface joinGame(GameStateInterface client, String expectedName, PirateColor expectedColor) throws RemoteException;
 	
+	/** In wich step is the server?
+	 * @param client
+	 * @return
+	 * @throws RemoteException
+	 */
+	public GameStateInterface getServerStep(GameStateInterface client) throws RemoteException;
+	
 	/** Clean way to left the game.
 	 * @param client
 	 * @throws RemoteException

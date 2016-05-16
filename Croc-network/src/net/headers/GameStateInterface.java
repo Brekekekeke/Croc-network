@@ -31,8 +31,8 @@ public interface GameStateInterface extends Remote {
 	 * @return
 	 * @throws RemoteException
 	 */
-//	public GameStep getStep() throws RemoteException;
-	public void setStep(GameStep step) throws RemoteException;
+//	public ServerStep getStep() throws RemoteException;
+	public void setStep(ServerStep step) throws RemoteException;
 	
 	
 	/** How many players in total. Requiert step WAITCARD or WON.
