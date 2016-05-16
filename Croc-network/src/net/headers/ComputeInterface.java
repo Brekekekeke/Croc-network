@@ -28,7 +28,7 @@ public interface ComputeInterface extends Remote {
 	 * @param expectedColor
 	 * @return
 	 */
-	public GameStateInterface addBotPlayer(GameStateInterface client, PirateColor expectedColor);
+	public GameStateInterface addBotPlayer(GameStateInterface client, PirateColor expectedColor) throws RemoteException;
 	
 	/** In which step is the server?
 	 * @param client

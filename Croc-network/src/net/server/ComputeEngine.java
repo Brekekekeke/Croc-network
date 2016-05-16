@@ -148,10 +148,15 @@ public class ComputeEngine implements ComputeInterface {
 	}
 	
 	@Override
-	public GameStateInterface joinGame(GameStateInterface client, String expectedName, PirateColor expectedColor) throws RemoteException {
+	public GameStateInterface joinGame(GameStateInterface client, String expectedName, PirateColor expectedColor) {
 		if (myStep != ServerStep.WAITCO) {
 			System.out.println("Pas de partie dispo");
-			client.setStep(myStep);
+			try {
+				client.setStep(myStep);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return client;
 		}
 		if (nbBot + nbPlayersCo == nbPlayers) {
@@ -161,7 +166,13 @@ public class ComputeEngine implements ComputeInterface {
 		} else if (alreadyUsedColor(expectedColor)) {
 			System.out.println("Cette couleur est prise");
 		} else {
-			Player p = new Player (getNbCard(), client.getClientName(), client.getClientColor(), false);
+			Player p = null;
+			try {
+				p = new Player (getNbCard(), client.getClientName(), client.getClientColor(), false);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			for (int i = 0; i < nbPlayers; i++) {
 				if (players[i] == null) {
 					players[i] = p;
@@ -195,7 +206,8 @@ public class ComputeEngine implements ComputeInterface {
 				players[i] = p;
 				nbBot += 1;
 				if (nbBot + nbPlayersCo == nbPlayers) {
-					configureGame();
+					System.out.println("Ok pour ce bot");
+//					configureGame();
 				}
 			}
 		}
@@ -256,9 +268,13 @@ public class ComputeEngine implements ComputeInterface {
 	    	int numPort = Integer.parseInt(args[0]);
 	    	String name = "Compute";
 	    	ComputeInterface engine = new ComputeEngine();
+	    	System.out.println("BA");
 	    	ComputeInterface stub = (ComputeInterface) UnicastRemoteObject.exportObject(engine, numPort);
+	    	System.out.println("BE");
 	    	Registry registry = LocateRegistry.createRegistry(numPort); // default local 1099
+	    	System.out.println("BI");
 	    	registry.rebind(name, stub);
+	    	System.out.println("BO");
 	    } catch (Exception e) {
 	    	System.err.println("ComputeEngine exception");
 	    	e.printStackTrace();
