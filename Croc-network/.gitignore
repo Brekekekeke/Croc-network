@@ -1,5 +1,13 @@
 /bin/
 
+exec/client
+
+exec/header
+
+exec/server
+
+exec/*.jar
+
 *.class
 
 *.jar
