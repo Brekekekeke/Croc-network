@@ -12,10 +12,6 @@ import net.headers.ComputeInterface;
  * @author tristan
  * Is client main
  */
-/**
- * @author tristan
- *
- */
 public class Client {
 	
 	public static GameStateImpl gameState;
@@ -43,7 +39,7 @@ public class Client {
 	    try {
 	    	ComputeInterface comp = connect("", serverPort);
 	    	
-//	    	comp.newGame(5);
+	    	comp.newGame(gameState, 5);
 	    	comp.joinGame(gameState, "a name", PirateColor.BLACK);
 	    	
 	    	gameState.setCardToPlay(6);

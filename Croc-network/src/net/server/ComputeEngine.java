@@ -23,79 +23,137 @@ public class ComputeEngine implements ComputeInterface {
 	private Game game;
 	private ServerStep myStep;
 	
-	/** Constructor
-	 * 
+	/**
+	 * Constructor
 	 */
 	public ComputeEngine() {
 		super();
+		myStep = ServerStep.CLOSED;
 	}
 	
-	/* (non-Javadoc)
-	 * @see neXt.compute.Compute#playCard(neXt.compute.CallBack)
+	/**
+	 * Getters, Setters
 	 */
-	@Override
-	public boolean playCard(GameStateInterface client) throws RemoteException{
-		try {
-			System.out.println("Le client demande à jouer la carte " + client.getGardToPlay());
-			if (canPlay(client.getGardToPlay())) {
-				client.setLastPlayedCard(client.getGardToPlay());
-				//TODO enregistrer l'info;
-				return true;
-			} else {
-				System.out.println("Pas possible de jouer cette carte");
-				return false;
-			}
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return false;
+	public static int getMaxPlayers() {
+		return maxPlayers;
 	}
+
+	public static void setMaxPlayers(int maxPlayers) {
+		ComputeEngine.maxPlayers = maxPlayers;
+	}
+
+	public int getNbPlayers() {
+		return nbPlayers;
+	}
+
+	public void setNbPlayers(int nbPlayers) {
+		this.nbPlayers = nbPlayers;
+	}
+
+	public int getNbPlayersCo() {
+		return nbPlayersCo;
+	}
+
+	public void setNbPlayersCo(int nbPlayersCo) {
+		this.nbPlayersCo = nbPlayersCo;
+	}
+
+	public int getNbBot() {
+		return nbBot;
+	}
+
+	public void setNbBot(int nbBot) {
+		this.nbBot = nbBot;
+	}
+
+	public int getNbCard() {
+		return nbCard;
+	}
+
+
+	/** Define how many cards has each player depending on nbPlayers
+	 *  TODO implement true rules
+	 */
+	public void setNbCard() {
+		this.nbCard = getNbPlayers();
+	}
+
+	public Player[] getPlayers() {
+		return players;
+	}
+
+	public void setPlayers(Player[] players) {
+		this.players = players;
+	}
+
+	public Game getGame() {
+		return game;
+	}
+
+	public void setGame(Game game) {
+		this.game = game;
+	}
+
+	public ServerStep getMyStep() {
+		return myStep;
+	}
+
+	public void setMyStep(ServerStep myStep) {
+		this.myStep = myStep;
+	}
+
+	
+	// Internal methods
 	
 	private boolean canPlay(int gardToPlay) {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-	/* (non-Javadoc)
-	 * @see neXt.compute.Compute#shutDown()
-	 */
-	public void shutDown() {
-		System.out.println("On m'a demandé d'arreter !");
-		System.exit(0);
-	}
 	
-	public void newGame(int nbPlayers) {
-		System.out.println("Ouverture d'une partie à " + nbPlayers + " joueurs.");
-		setNbPlayers(nbPlayers);
-		setNbCard();
-	}
-	
-	public void configureGame() {
+	private void configureGame() {
 		game = new Game(players, nbPlayers);
 	}
 	
-	public boolean addBotPlayer() {
-		if (nbBot + nbPlayersCo == nbPlayers) {
-			System.out.println("Toutes les places sont prises");
-			return false;
-		}
-//		int cardAmount, String name_, PirateColor color, Boolean isBot_
-		Player p = new Player (getNbCard(), "Bot", PirateColor.BLACK, true);
-		for (int i = 0; i < nbPlayers; i++) {
-			if (players[i] == null) {
-				players[i] = p;
-				nbBot += 1;
-				if (nbBot + nbPlayersCo == nbPlayers) {
-					configureGame();
-				}
-				return true;
-			}
-		}
+	private boolean alreadyUsedColor(PirateColor expectedColor) {
+		// TODO Auto-generated method stub
 		return false;
 	}
+
+	private boolean alreadyUsedName(String expectedName) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+
 	
+
+
+	
+	// Implementation of ComputeInterface
+	
+	@Override
+	public GameStateInterface newGame(GameStateInterface client, int nbPlayers) {
+		System.out.println("Ouverture d'une partie à " + nbPlayers + " joueurs.");
+		setNbPlayers(nbPlayers);
+		setNbCard();
+		myStep = ServerStep.WAITCO;
+		try {
+			client.setStep(getMyStep());
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return client;
+	}
+	
+	@Override
 	public GameStateInterface joinGame(GameStateInterface client, String expectedName, PirateColor expectedColor) throws RemoteException {
+		if (myStep != ServerStep.WAITCO) {
+			System.out.println("Pas de partie dispo");
+			client.setStep(myStep);
+			return client;
+		}
 		if (nbBot + nbPlayersCo == nbPlayers) {
 			System.out.println("Toutes les places sont prises");
 		} else if (alreadyUsedName(expectedName)) {
@@ -124,33 +182,50 @@ public class ComputeEngine implements ComputeInterface {
 		return client;
 	}
 	
-	private boolean alreadyUsedColor(PirateColor expectedColor) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	private boolean alreadyUsedName(String expectedName) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public int getNbPlayers() {
-		return nbPlayers;
-	}
-
-	public void setNbPlayers(int nbPlayers) {
-		this.nbPlayers = nbPlayers;
+	@Override
+	public GameStateInterface addBotPlayer(GameStateInterface client, PirateColor expectedColor) {
+		if (nbBot + nbPlayersCo == nbPlayers) {
+			System.out.println("Toutes les places sont prises");
+			return client;
+		}
+//		int cardAmount, String name_, PirateColor color, Boolean isBot_
+		Player p = new Player (getNbCard(), "Bot", PirateColor.BLACK, true);
+		for (int i = 0; i < nbPlayers; i++) {
+			if (players[i] == null) {
+				players[i] = p;
+				nbBot += 1;
+				if (nbBot + nbPlayersCo == nbPlayers) {
+					configureGame();
+				}
+			}
+		}
+		return client;
 	}
 	
-	public int getNbCard() {
-		return nbCard;
+	@Override
+	public GameStateInterface getServerStep(GameStateInterface client) throws RemoteException {
+		// TODO Auto-generated method stub
+		client.setStep(myStep);
+		return client;
 	}
-
-	/** Define how many cards has each player depending on nbPlayers
-	 *  TODO implement true rules
-	 */
-	private void setNbCard() {
-		this.nbCard = nbPlayers;
+	
+	@Override
+	public boolean playCard(GameStateInterface client) throws RemoteException{
+		try {
+			System.out.println("Le client demande à jouer la carte " + client.getGardToPlay());
+			if (canPlay(client.getGardToPlay())) {
+				client.setLastPlayedCard(client.getGardToPlay());
+				//TODO enregistrer l'info;
+				return true;
+			} else {
+				System.out.println("Pas possible de jouer cette carte");
+				return false;
+			}
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	@Override
@@ -160,11 +235,12 @@ public class ComputeEngine implements ComputeInterface {
 	}
 
 	@Override
-	public GameStateInterface getServerStep(GameStateInterface client) throws RemoteException {
-		// TODO Auto-generated method stub
-		client.setStep(myStep);
-		return client;
+	public void shutDown() {
+		System.out.println("On m'a demandé d'arreter !");
+		System.exit(0);
 	}
+	
+	
 	
 	
 	
