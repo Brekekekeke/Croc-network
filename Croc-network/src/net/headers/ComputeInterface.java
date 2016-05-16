@@ -33,6 +33,13 @@ public interface ComputeInterface extends Remote {
 	 */
 	public GameStateInterface addBotPlayer(GameStateInterface client, PirateColor expectedColor) throws RemoteException;
 	
+	/** Ask the server to start the game. Will require READY
+	 * @param client
+	 * @return
+	 * @throws RemoteException
+	 */
+	public GameStateInterface startGame(GameStateInterface client) throws RemoteException;
+	
 	/** In which step is the server?
 	 * @param client
 	 * @return
@@ -44,7 +51,14 @@ public interface ComputeInterface extends Remote {
 	 * @param client 
 	 * @throws RemoteException
 	 */
-	public boolean playCard (GameStateInterface client) throws RemoteException;
+	public GameStateInterface playCard (GameStateInterface client) throws RemoteException;
+	
+	/** Ask for a fully updated GameState
+	 * @param client
+	 * @return
+	 * @throws RemoteException
+	 */
+	public GameStateInterface updateMe(GameStateInterface client) throws RemoteException;
 	
 	/** Clean way to left the game.
 	 * @param client

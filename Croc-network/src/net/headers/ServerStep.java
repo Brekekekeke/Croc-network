@@ -1,5 +1,10 @@
 package net.headers;
 
 public enum ServerStep {
-	WAITCO, WAITCARD, WON, CLOSED
+	WAITCO,
+	READY,
+	WAITCARD,
+	PROCESSING,
+	WON,
+	CLOSED
 }

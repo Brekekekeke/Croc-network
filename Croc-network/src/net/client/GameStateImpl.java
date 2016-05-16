@@ -6,6 +6,7 @@ import java.rmi.server.UnicastRemoteObject;
 import engine.models.PirateColor;
 import engine.models.Player;
 import net.headers.GameStateInterface;
+import net.headers.ServerError;
 import net.headers.ServerStep;
 
 /**
@@ -22,6 +23,7 @@ public class GameStateImpl extends UnicastRemoteObject implements GameStateInter
 	private PirateColor clientColor;
 
 	private ServerStep lastKnownStep;
+	private ServerError error;
 	private int nbPlayers;
 	private int nbCards;
 	
@@ -38,37 +40,41 @@ public class GameStateImpl extends UnicastRemoteObject implements GameStateInter
 	
 	//Getters, Setters
 	
-	public void setClientName(String name) {
-		this.clientName = name;
+	public String getClientName() {
+		return clientName;
 	}
 	
-	public void setClientColor(PirateColor color) {
-		this.clientColor = color;
+	public PirateColor getClientColor() {
+		return clientColor;
 	}
 	
-	public ServerStep getStep() throws RemoteException {
+	public ServerStep getStep() {
 		return lastKnownStep;
 	}
+	
+	public ServerError getError() {
+		return this.error;
+	}
 
-	public int getnbPlayers() throws RemoteException {
+	public int getnbPlayers() {
 		return nbPlayers;
 	}
 
 
-	public int getNbCards() throws RemoteException {
+	public int getNbCards() {
 		return nbCards;
 	}
 
-	public Player[] getPlayers() throws RemoteException {
+	public Player[] getPlayers() {
 		return players;
 	}
 
-	public void setCardToPlay(int cardNumber) throws RemoteException {
+	public void setCardToPlay(int cardNumber) {
 		this.cardToPlay = cardNumber;
 	}
 
 
-	public int getLastPlayedCard() throws RemoteException {
+	public int getLastPlayedCard() {
 		return LastPlayedCard;
 	}
 	
@@ -84,12 +90,12 @@ public class GameStateImpl extends UnicastRemoteObject implements GameStateInter
 	 * @return The state of the card.
 	 * @throws RemoteException
 	 */
-	public boolean getThisCardState(int numCard) throws RemoteException {
+	public boolean getThisCardState(int numCard) {
 		boolean something = true;
 		return something;
 	}
 	
-	public boolean[] getThisPlayerHand(int playerNum) throws RemoteException {
+	public boolean[] getThisPlayerHand(int playerNum) {
 		return players[playerNum].getCards(this.getNbCards());
 	}
 
@@ -121,16 +127,16 @@ public class GameStateImpl extends UnicastRemoteObject implements GameStateInter
 	 * @see net.headers.GameStateInterface#getClientName()
 	 */
 	@Override
-	public String getClientName() throws RemoteException {
-		return this.clientName;
+	public void setClientName(String name) throws RemoteException {
+		this.clientName = name;
 	}
 	
 	/* (non-Javadoc)
 	 * @see net.headers.GameStateInterface#getClientColor()
 	 */
 	@Override
-	public PirateColor getClientColor() throws RemoteException {
-		return this.clientColor;
+	public void setClientColor(PirateColor color) throws RemoteException {
+		this.clientColor = color;
 	}
 
 	/* (non-Javadoc)
@@ -140,6 +146,15 @@ public class GameStateImpl extends UnicastRemoteObject implements GameStateInter
 	public void setStep(ServerStep step) throws RemoteException {
 		// TODO Auto-generated method stub
 		this.lastKnownStep = step;
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.headers.GameStateInterface#setError(net.headers.ServerError)
+	 */
+	@Override
+	public void setError(ServerError error) throws RemoteException {
+		// TODO Auto-generated method stub
+		this.error = error;
 	}
 
 	/* (non-Javadoc)

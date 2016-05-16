@@ -43,7 +43,6 @@ public class Client {
 	    	
 	    	comp.newGame(gameState, 5);
 	    	comp.joinGame(gameState, "a name", PirateColor.BLACK);
-	    	
 	    	gameState.setCardToPlay(6);
 	    	
 	    	comp.playCard(gameState);

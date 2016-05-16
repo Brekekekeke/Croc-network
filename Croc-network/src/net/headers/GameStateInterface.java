@@ -24,29 +24,36 @@ public interface GameStateInterface extends Remote {
 	 * @return
 	 * @throws RemoteException
 	 */
-	public String getClientName() throws RemoteException;
-//	public void setClientName(String name) throws RemoteException;
+//	public String getClientName();
+	public void setClientName(String name) throws RemoteException;
 	
 	/** Players color, authorized by server.
 	 * @return
 	 * @throws RemoteException
 	 */
-	public PirateColor getClientColor() throws RemoteException;
-//	public void setClientColor(PirateColor color) throws RemoteException;
+//	public PirateColor getClientColor();
+	public void setClientColor(PirateColor color) throws RemoteException;
 	
 	/** Step of the game
 	 * @return
 	 * @throws RemoteException
 	 */
-//	public ServerStep getStep() throws RemoteException;
+//	public ServerStep getStep();
 	public void setStep(ServerStep step) throws RemoteException;
+	
+	/** Is there an error?
+	 * @param error
+	 * @throws RemoteException
+	 */
+//	public ServerError getError();
+	public void setError(ServerError error) throws RemoteException;
 	
 	
 	/** How many players in total. Will require step WAITCARD or WON.
 	 * @return
 	 * @throws RemoteException
 	 */
-//	public int getnbPlayers() throws RemoteException;
+//	public int getnbPlayers();
 	public void setNbPlayers(int nbPlayers) throws RemoteException;
 	
 	
@@ -54,7 +61,7 @@ public interface GameStateInterface extends Remote {
 	 * @return
 	 * @throws RemoteException
 	 */
-//	public int getNbCards() throws RemoteException;
+//	public int getNbCards();
 	public void setNbCards(int nbCards) throws RemoteException;
 
 	
@@ -62,7 +69,7 @@ public interface GameStateInterface extends Remote {
 	 * @return
 	 * @throws RemoteException
 	 */
-//	public Player[] getPlayers() throws RemoteException;
+//	public Player[] getPlayers();
 	public void setPlayers(Player[] players) throws RemoteException;
 	
 	
@@ -71,14 +78,14 @@ public interface GameStateInterface extends Remote {
 	 * @throws RemoteException
 	 */
 	public int getGardToPlay() throws RemoteException;	
-//	public void setCardToPlay(int cardNumber) throws RemoteException;
+//	public void setCardToPlay(int cardNumber)n;
 	
 	
 	/** The last card from you the server admitted
 	 * @param cardNumber
 	 * @throws RemoteException
 	 */
-//	public int getLastPlayedCard() throws RemoteException;
+//	public int getLastPlayedCard();
 	public void setLastPlayedCard(int cardNumber) throws RemoteException;
 	
 }

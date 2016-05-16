@@ -1,0 +1,12 @@
+package net.headers;
+
+public enum ServerError {
+	NOERROR,
+	INVALIDNAME,
+	INVALIDCOLOR,
+	INVALIDCARD,
+	NOAVAILABLEGAME,
+	GAMEISFULL,
+	NOTREADY,
+	NOTYOURTURN
+}
