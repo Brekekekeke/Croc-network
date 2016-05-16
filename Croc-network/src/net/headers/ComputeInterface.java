@@ -5,8 +5,11 @@ import java.rmi.RemoteException;
 
 import engine.models.PirateColor;
 
+/**
+ * @author CrocTeam
+ * All you can ask to the server. Answers are in GameState return.
+ */
 public interface ComputeInterface extends Remote {
-//	<T> T executeTask(Task<T> t) throws RemoteException;
 	
 	/** Create a new game.
 	 * @param nbPlayers How many slots in this game

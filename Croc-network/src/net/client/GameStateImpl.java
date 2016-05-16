@@ -9,22 +9,72 @@ import net.headers.GameStateInterface;
 import net.headers.ServerStep;
 
 /**
- * @author tristan
- *
+ * @author CrocTeam
+ * Implementation of GameStateInterface.
+ * Added methods to easily set or find information you need to.
  */
 public class GameStateImpl extends UnicastRemoteObject implements GameStateInterface {
 
 	private static final long serialVersionUID = 1L;
 
+	private long clientID;
+	private String clientName;
+	private PirateColor clientColor;
+
+	private ServerStep lastKnownStep;
+	private int nbPlayers;
+	private int nbCards;
+	
 	public Player players[];
 
+	private int cardToPlay;
 	private int LastPlayedCard;
+	
+	
 	
 	protected GameStateImpl() throws RemoteException {
 		super();
 	}
 	
-	// Client methods
+	//Getters, Setters
+	
+	public void setClientName(String name) {
+		this.clientName = name;
+	}
+	
+	public void setClientColor(PirateColor color) {
+		this.clientColor = color;
+	}
+	
+	public ServerStep getStep() throws RemoteException {
+		return lastKnownStep;
+	}
+
+	public int getnbPlayers() throws RemoteException {
+		return nbPlayers;
+	}
+
+
+	public int getNbCards() throws RemoteException {
+		return nbCards;
+	}
+
+	public Player[] getPlayers() throws RemoteException {
+		return players;
+	}
+
+	public void setCardToPlay(int cardNumber) throws RemoteException {
+		this.cardToPlay = cardNumber;
+	}
+
+
+	public int getLastPlayedCard() throws RemoteException {
+		return LastPlayedCard;
+	}
+	
+	
+	// Internal methods
+	
 	public boolean amIWinner() {
 		return false;
 	}
@@ -43,112 +93,96 @@ public class GameStateImpl extends UnicastRemoteObject implements GameStateInter
 		return players[playerNum].getCards(this.getNbCards());
 	}
 
-	public void setMyName(String name) {
-		
-	}
 	public String getMyName() throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	public void getMyColor(PirateColor color) throws RemoteException {
-		// TODO Auto-generated method stub
-	}
-	public PirateColor getMyColor() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	// Interface methods
+	
+	
+	// Implementation of GameStateInterface
+	
+	/* (non-Javadoc)
+	 * @see net.headers.GameStateInterface#getID()
+	 */
 	@Override
-	public long getID() throws RemoteException {
-		// TODO Auto-generated method stub
-		return 0;
+	public long getClientID() throws RemoteException {
+		return this.clientID;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.headers.GameStateInterface#setId(long)
+	 */
 	@Override
-	public void setId(long id) throws RemoteException {
-		// TODO Auto-generated method stub
-		
+	public void setClientId(long id) throws RemoteException {
+		this.clientID = id;
 	}
 
-//	@Override
-	public ServerStep getStep() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+	/* (non-Javadoc)
+	 * @see net.headers.GameStateInterface#getClientName()
+	 */
+	@Override
+	public String getClientName() throws RemoteException {
+		return this.clientName;
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.headers.GameStateInterface#getClientColor()
+	 */
+	@Override
+	public PirateColor getClientColor() throws RemoteException {
+		return this.clientColor;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.headers.GameStateInterface#setStep(net.headers.ServerStep)
+	 */
 	@Override
 	public void setStep(ServerStep step) throws RemoteException {
 		// TODO Auto-generated method stub
-		
+		this.lastKnownStep = step;
 	}
 
-//	@Override
-	public int getnbPlayers() throws RemoteException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
+	/* (non-Javadoc)
+	 * @see net.headers.GameStateInterface#setNbPlayers(int)
+	 */
 	@Override
 	public void setNbPlayers(int nbPlayers) throws RemoteException {
 		// TODO Auto-generated method stub
-		
+		this.nbPlayers = nbPlayers; 
 	}
-
-//	@Override
-	public int getNbCards() throws RemoteException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
+	
+	/* (non-Javadoc)
+	 * @see net.headers.GameStateInterface#setNbCards(int)
+	 */
 	@Override
 	public void setNbCards(int nbCards) throws RemoteException {
 		// TODO Auto-generated method stub
-		
+		this.nbCards = nbCards;
 	}
-
-//	@Override
-	public Player[] getPlayers() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
+	/* (non-Javadoc)
+	 * @see net.headers.GameStateInterface#setPlayers(engine.models.Player[])
+	 */
 	@Override
 	public void setPlayers(Player[] players) throws RemoteException {
 		// TODO Auto-generated method stub
+		this.players = players;
 		
 	}
-
+	/* (non-Javadoc)
+	 * @see net.headers.GameStateInterface#getGardToPlay()
+	 */
 	@Override
 	public int getGardToPlay() throws RemoteException {
 		// TODO Auto-generated method stub
-		return 0;
+		return cardToPlay;
 	}
 
-//	@Override
-	public void setCardToPlay(int cardNumber) throws RemoteException {
-		// TODO Auto-generated method stub
-		
-	}
-
+	/* (non-Javadoc)
+	 * @see net.headers.GameStateInterface#setLastPlayedCard(int)
+	 */
 	@Override
-	public String getClientName() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public PirateColor getClientColor() throws RemoteException {
-		// TODO Auto-generated method stub
-		return this.getMyColor();
-	}
-	
 	public void setLastPlayedCard(int cardNumber) throws RemoteException {
 		LastPlayedCard = cardNumber;
-	}
-	public int getLastPlayedCard() throws RemoteException {
-		return LastPlayedCard;
 	}
 }

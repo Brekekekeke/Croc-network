@@ -12,6 +12,11 @@ import net.headers.ComputeInterface;
 import net.headers.GameStateInterface;
 import net.headers.ServerStep;
 
+/**
+ * @author CrocTeam
+ * Servers implementation of ComputeInterface.
+ * Contains all methods run by the server including creating and resolving game. 
+ */
 public class ComputeEngine implements ComputeInterface {
 
 	private static int maxPlayers = 7;
@@ -31,9 +36,8 @@ public class ComputeEngine implements ComputeInterface {
 		myStep = ServerStep.CLOSED;
 	}
 	
-	/**
-	 * Getters, Setters
-	 */
+	//Getters, Setters
+	
 	public static int getMaxPlayers() {
 		return maxPlayers;
 	}
@@ -105,7 +109,7 @@ public class ComputeEngine implements ComputeInterface {
 	
 	// Internal methods
 	
-	private boolean canPlay(int gardToPlay) {
+	private boolean canPlay(int cardToPlay) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -267,14 +271,15 @@ public class ComputeEngine implements ComputeInterface {
 	    try {
 	    	int numPort = Integer.parseInt(args[0]);
 	    	String name = "Compute";
+	    	
 	    	ComputeInterface engine = new ComputeEngine();
-	    	System.out.println("BA");
+	    	
 	    	ComputeInterface stub = (ComputeInterface) UnicastRemoteObject.exportObject(engine, numPort);
-	    	System.out.println("BE");
+	    	
 	    	Registry registry = LocateRegistry.createRegistry(numPort); // default local 1099
-	    	System.out.println("BI");
+	    	
 	    	registry.rebind(name, stub);
-	    	System.out.println("BO");
+	    	
 	    } catch (Exception e) {
 	    	System.err.println("ComputeEngine exception");
 	    	e.printStackTrace();

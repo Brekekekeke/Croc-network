@@ -6,24 +6,31 @@ import java.rmi.RemoteException;
 import engine.models.PirateColor;
 import engine.models.Player;
 
-/** What server can say about the game 
- * @author tristan
- *
+/**
+ * @author CrocTeam
+ * All the server can tell you about the game.
  */
 public interface GameStateInterface extends Remote {
-//	Player me = new Player(7, "aName", PirateColor.GREEN, false);
 	
 	/** Private client id (security patch)
 	 * @return
 	 * @throws RemoteException
 	 */
-	public long getID() throws RemoteException;
-	public void setId(long id) throws RemoteException;
+	public long getClientID() throws RemoteException;
+	public void setClientId(long id) throws RemoteException;
 	
 	
+	/** Players name, authorized by server.
+	 * @return
+	 * @throws RemoteException
+	 */
 	public String getClientName() throws RemoteException;
 //	public void setClientName(String name) throws RemoteException;
 	
+	/** Players color, authorized by server.
+	 * @return
+	 * @throws RemoteException
+	 */
 	public PirateColor getClientColor() throws RemoteException;
 //	public void setClientColor(PirateColor color) throws RemoteException;
 	
@@ -35,7 +42,7 @@ public interface GameStateInterface extends Remote {
 	public void setStep(ServerStep step) throws RemoteException;
 	
 	
-	/** How many players in total. Requiert step WAITCARD or WON.
+	/** How many players in total. Will require step WAITCARD or WON.
 	 * @return
 	 * @throws RemoteException
 	 */
@@ -43,7 +50,7 @@ public interface GameStateInterface extends Remote {
 	public void setNbPlayers(int nbPlayers) throws RemoteException;
 	
 	
-	/** How many cards available for this game. Requiert step WAITCARD.
+	/** How many cards available for this game. Will require step WAITCARD.
 	 * @return
 	 * @throws RemoteException
 	 */
@@ -51,7 +58,7 @@ public interface GameStateInterface extends Remote {
 	public void setNbCards(int nbCards) throws RemoteException;
 
 	
-	/** Players in the game. Requiert step WAITCARD or WON.
+	/** Players in the game. Will require step WAITCARD or WON.
 	 * @return
 	 * @throws RemoteException
 	 */
@@ -59,7 +66,7 @@ public interface GameStateInterface extends Remote {
 	public void setPlayers(Player[] players) throws RemoteException;
 	
 	
-	/** The card that client want to play. Requiert step WAITCARD.
+	/** The card that client want to play. Will require step WAITCARD.
 	 * @return
 	 * @throws RemoteException
 	 */
@@ -67,35 +74,11 @@ public interface GameStateInterface extends Remote {
 //	public void setCardToPlay(int cardNumber) throws RemoteException;
 	
 	
-	/** the last card the server admitted
+	/** The last card from you the server admitted
 	 * @param cardNumber
 	 * @throws RemoteException
 	 */
-	public void setLastPlayedCard(int cardNumber) throws RemoteException;
 //	public int getLastPlayedCard() throws RemoteException;
+	public void setLastPlayedCard(int cardNumber) throws RemoteException;
 	
-	
-//	public void setState(boolean[] newHand) throws RemoteException;
-//	
-//	/** Getting know game state
-//	 * @return State of game (here players hand).
-//	 * @throws RemoteException
-//	 */
-//	public boolean[] getState() throws RemoteException;
-//
-//	
-//	/** Setting the card i wanna play.
-//	 * @param numCard The card i wanna play.
-//	 * @throws RemoteException
-//	 */
-//	public void setWannaPlay(int numCard) throws RemoteException;
-//	
-//	/** Getting the card i wanna play.
-//	 * @return The card i wanna play.
-//	 * @throws RemoteException
-//	 */
-//	public int getWannaPlay() throws RemoteException;
-//
-//
-//	public void update() throws RemoteException;
 }

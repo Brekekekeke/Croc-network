@@ -9,8 +9,10 @@ import engine.models.PirateColor;
 import net.headers.ComputeInterface;
 
 /**
- * @author tristan
- * Is client main
+ * @author CrocTeam
+ * Is client main. Will be used to create server if needed and connect to it.
+ * Use ComputeInterface methods to interact with server.
+ * Use GameStateImpl to know about the game.
  */
 public class Client {
 	
