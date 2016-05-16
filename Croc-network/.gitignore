@@ -1,12 +1,12 @@
 /bin/
 
-exec/client
+src/exec/client
 
-exec/header
+src/exec/header
 
-exec/server
+src/exec/server
 
-exec/*.jar
+src/exec/*.jar
 
 *.class
 
