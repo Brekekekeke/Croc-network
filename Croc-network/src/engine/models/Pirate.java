@@ -11,6 +11,8 @@ import engine.exceptions.UnavailableCardException;
  *
  */
 public class Pirate {
+	
+	public static int maxCards = 7; 
 	boolean leftLeg;
 	boolean rightLeg;
 	boolean leftArm;
@@ -21,7 +23,16 @@ public class Pirate {
 	//TODO: add unit tests to see is available cards always work correctly.
 	public ArrayList<Card> availableCards;
 	private int lastPlayedCard;
-	final public Player owner;
+	public boolean hand[] = new boolean[maxCards];
+	public Player owner;
+	
+	public boolean[] getHand() {
+		System.out.println("On arrive a pirate.getHand");
+		return this.hand;
+	}
+	public void setHand(int card, boolean inHand) {
+		hand[card] = inHand;
+	}
 	
 	public int getLastPlayedCard(){
 		return lastPlayedCard;
@@ -39,7 +50,7 @@ public class Pirate {
 		lastPlayedCard = i;
 	}
 	
-	public Pirate(PirateColor color_, int cardAmount, Player owner_){
+	public Pirate(PirateColor color_, int cardAmount, Player owner_) {
 		leftLeg = true;
 		leftArm = true;
 		rightArm = true;
@@ -53,6 +64,21 @@ public class Pirate {
 		for(int i = 0; i < cards.length; i++)
 			availableCards.add(cards[i]);
 		owner = owner_;
+	}
+	
+	public Pirate(PirateColor color_, int cardAmount) {
+		leftLeg = true;
+		leftArm = true;
+		rightArm = true;
+		rightLeg = true;
+		limbCount = 4;
+		color = color_;
+		cards = new Card[cardAmount];
+		availableCards = new ArrayList<Card>();
+		for(int i = 1; i <= cardAmount; i++)
+			cards[i-1] = new Card(i);
+		for(int i = 0; i < cards.length; i++)
+			availableCards.add(cards[i]);
 	}
 	
 	public boolean isAlive(){

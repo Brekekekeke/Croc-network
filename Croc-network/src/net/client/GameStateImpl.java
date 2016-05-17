@@ -4,8 +4,8 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 import engine.models.PirateColor;
-import engine.models.Player;
 import net.headers.GameStateInterface;
+import net.headers.RemotePlayerInterface;
 import net.headers.ServerError;
 import net.headers.ServerStep;
 
@@ -17,7 +17,18 @@ import net.headers.ServerStep;
 public class GameStateImpl extends UnicastRemoteObject implements GameStateInterface {
 
 	private static final long serialVersionUID = 1L;
+	private static int maxPlayers = 7;
+	
+	public int nbPlayersCo;
 
+	
+	public void setNbPlayersCo(int co){
+		nbPlayersCo = co;
+	}
+	public int getNbPlayerCo() {
+		return nbPlayersCo;
+	}
+	
 	private long clientID;
 	private String clientName;
 	private PirateColor clientColor;
@@ -27,7 +38,7 @@ public class GameStateImpl extends UnicastRemoteObject implements GameStateInter
 	private int nbPlayers;
 	private int nbCards;
 	
-	public Player players[];
+	private RemotePlayerInterface players[] = new RemotePlayerInterface[maxPlayers];
 
 	private int cardToPlay;
 	private int LastPlayedCard;
@@ -65,7 +76,7 @@ public class GameStateImpl extends UnicastRemoteObject implements GameStateInter
 		return nbCards;
 	}
 
-	public Player[] getPlayers() {
+	public RemotePlayerInterface[] getPlayers() {
 		return players;
 	}
 
@@ -96,7 +107,13 @@ public class GameStateImpl extends UnicastRemoteObject implements GameStateInter
 	}
 	
 	public boolean[] getThisPlayerHand(int playerNum) {
-		return players[playerNum].getCards(this.getNbCards());
+		try {
+			return players[playerNum].getPirate().getHand();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		System.out.println("Probleme dans getThisPlayerHand");
+		return null;
 	}
 
 	public String getMyName() throws RemoteException {
@@ -179,7 +196,7 @@ public class GameStateImpl extends UnicastRemoteObject implements GameStateInter
 	 * @see net.headers.GameStateInterface#setPlayers(engine.models.Player[])
 	 */
 	@Override
-	public void setPlayers(Player[] players) throws RemoteException {
+	public void setPlayers(RemotePlayerInterface[] players) throws RemoteException {
 		// TODO Auto-generated method stub
 		this.players = players;
 		

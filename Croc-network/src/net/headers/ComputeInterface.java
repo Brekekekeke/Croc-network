@@ -11,6 +11,7 @@ import engine.models.PirateColor;
  */
 public interface ComputeInterface extends Remote {
 	
+
 	/** Create a new game.
 	 * @param nbPlayers How many slots in this game
 	 * @throws RemoteException

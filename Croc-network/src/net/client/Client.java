@@ -40,13 +40,17 @@ public class Client {
 		init();
 	    try {
 	    	ComputeInterface comp = connect("", serverPort);
-	    	
+	    	System.out.println("BA");
 	    	comp.newGame(gameState, 5);
-	    	comp.joinGame(gameState, "a name", PirateColor.BLACK);
+	    	System.out.println("BE");
+	    	comp.joinGame(gameState, "LOLO", PirateColor.BLACK);
+	    	System.out.println("BI");
 	    	gameState.setCardToPlay(6);
-	    	
+	    	System.out.println("BO");
 	    	comp.playCard(gameState);
-	    	
+	    	System.out.println("BU");
+	    	System.out.println("Joueurs 0 :" + gameState.getPlayers()[0].getName());
+	    	System.out.println("Dernier joueur :" + gameState.getPlayers()[gameState.getNbPlayerCo() - 1].getName());
 //	    	comp.shutDown();
 //	    	System.out.println("J'ai coupé le serveur");
 	    	

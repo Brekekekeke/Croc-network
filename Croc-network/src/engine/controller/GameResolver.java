@@ -16,6 +16,10 @@ public class GameResolver {
 	public GameResolver(Game game_){
 		game = game_;
 	}
+	
+	public Game getGame() {
+		return game;
+	}
 	/**
 	 *  Shuffle pirates in piratesOrder ArrayList.
 	 */

@@ -13,19 +13,27 @@ PORTSERVEUR=1351
 
 tryAgain: clear build startServer
 
-build: buildModel buildHeaders buildServer buildClient
+build: buildController buildException buildModel buildHeaders buildServer buildClient
+
+buildController:
+	javac engine/controller/*.java
+	jar cvf $(TESTENV)/controller.jar engine/controller/*.class
+	
+buildException:
+	javac engine/exceptions/*.java
+	jar cvf $(TESTENV)/exceptions.jar engine/exceptions/*.class
 
 buildModel:
 	javac engine/models/*.java
 	jar cvf $(TESTENV)/models.jar engine/models/*.class
 	
 buildHeaders:
-	javac $(NET)/$(HEAD)/ComputeInterface.java $(NET)/$(HEAD)/GameStateInterface.java 
+	javac $(NET)/$(HEAD)/*.java
 	mkdir $(RUNHEAD)
 	jar cvf $(RUNHEAD)/computeInterface.jar $(NET)/$(HEAD)/*.class
 
 buildServer:
-	javac -cp $(TESTENV)/models.jar:$(RUNHEAD)/computeInterface.jar $(NET)/$(SERV)/ComputeEngine.java
+	javac -cp $(TESTENV)/controller.jar:$(TESTENV)/exceptions.jar:$(TESTENV)/models.jar:$(RUNHEAD)/computeInterface.jar $(NET)/$(SERV)/*.java
 	mkdir $(RUNSERV)
 	jar cvf $(RUNSERV)/server.jar $(NET)/$(SERV)/*.class
 	

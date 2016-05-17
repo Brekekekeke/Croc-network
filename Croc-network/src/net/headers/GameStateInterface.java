@@ -4,13 +4,15 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 import engine.models.PirateColor;
-import engine.models.Player;
 
 /**
  * @author CrocTeam
  * All the server can tell you about the game.
  */
 public interface GameStateInterface extends Remote {
+
+	
+	public void setNbPlayersCo(int nbCo) throws RemoteException;
 	
 	/** Private client id (security patch)
 	 * @return
@@ -69,8 +71,8 @@ public interface GameStateInterface extends Remote {
 	 * @return
 	 * @throws RemoteException
 	 */
-//	public Player[] getPlayers();
-	public void setPlayers(Player[] players) throws RemoteException;
+//	public RemotePlayerImpl[] getPlayers();
+	public void setPlayers(RemotePlayerInterface[] players) throws RemoteException;
 	
 	
 	/** The card that client want to play. Will require step WAITCARD.

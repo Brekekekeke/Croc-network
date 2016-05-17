@@ -12,7 +12,7 @@ public class Player {
 	public Boolean hasLost;
 	public Boolean isBot;
 	
-	public Player(int cardAmount, String name_, PirateColor color, Boolean isBot_){
+	public Player(int cardAmount, String name_, PirateColor color, Boolean isBot_) {
 		name = name_;
 		
 		pirates = new Pirate[1];
@@ -21,7 +21,7 @@ public class Player {
 		isBot = isBot_;
 	}
 	
-	public Player(int cardAmount, String name_, PirateColor colorOne, PirateColor colorTwo, Boolean isBot_){
+	public Player(int cardAmount, String name_, PirateColor colorOne, PirateColor colorTwo, Boolean isBot_) {
 		name = name_;
 		
 		pirates = new Pirate[2];
