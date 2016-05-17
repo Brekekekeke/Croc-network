@@ -5,7 +5,7 @@ import java.rmi.server.UnicastRemoteObject;
 
 import engine.models.PirateColor;
 import net.headers.GameStateInterface;
-import net.headers.RemotePlayerInterface;
+import net.headers.RemotePlayer;
 import net.headers.ServerError;
 import net.headers.ServerStep;
 
@@ -20,14 +20,21 @@ public class GameStateImpl extends UnicastRemoteObject implements GameStateInter
 	private static int maxPlayers = 7;
 	
 	public int nbPlayersCo;
-
-	
 	public void setNbPlayersCo(int co){
 		nbPlayersCo = co;
 	}
 	public int getNbPlayerCo() {
 		return nbPlayersCo;
 	}
+	
+	public int nbBot;
+	public void setNbBot(int nbBot) throws RemoteException {
+		this.nbBot = nbBot;
+	}
+	public int getNbBot() {
+		return nbBot;
+	}
+	
 	
 	private long clientID;
 	private String clientName;
@@ -38,7 +45,7 @@ public class GameStateImpl extends UnicastRemoteObject implements GameStateInter
 	private int nbPlayers;
 	private int nbCards;
 	
-	private RemotePlayerInterface players[] = new RemotePlayerInterface[maxPlayers];
+	private RemotePlayer players[] = new RemotePlayer[maxPlayers];
 
 	private int cardToPlay;
 	private int LastPlayedCard;
@@ -76,7 +83,7 @@ public class GameStateImpl extends UnicastRemoteObject implements GameStateInter
 		return nbCards;
 	}
 
-	public RemotePlayerInterface[] getPlayers() {
+	public RemotePlayer[] getPlayers() {
 		return players;
 	}
 
@@ -108,7 +115,7 @@ public class GameStateImpl extends UnicastRemoteObject implements GameStateInter
 	
 	public boolean[] getThisPlayerHand(int playerNum) {
 		try {
-			return players[playerNum].getPirate().getHand();
+			return players[playerNum].getPirate()[0].getHand();
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -196,7 +203,7 @@ public class GameStateImpl extends UnicastRemoteObject implements GameStateInter
 	 * @see net.headers.GameStateInterface#setPlayers(engine.models.Player[])
 	 */
 	@Override
-	public void setPlayers(RemotePlayerInterface[] players) throws RemoteException {
+	public void setPlayers(RemotePlayer[] players) throws RemoteException {
 		// TODO Auto-generated method stub
 		this.players = players;
 		

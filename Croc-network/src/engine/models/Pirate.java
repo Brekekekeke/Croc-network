@@ -23,13 +23,14 @@ public class Pirate {
 	//TODO: add unit tests to see is available cards always work correctly.
 	public ArrayList<Card> availableCards;
 	private int lastPlayedCard;
+	private int wannaPlay;
 	public boolean hand[] = new boolean[maxCards];
 	public Player owner;
 	
 	public boolean[] getHand() {
-		System.out.println("On arrive a pirate.getHand");
 		return this.hand;
 	}
+	
 	public void setHand(int card, boolean inHand) {
 		hand[card] = inHand;
 	}
@@ -37,9 +38,11 @@ public class Pirate {
 	public int getLastPlayedCard(){
 		return lastPlayedCard;
 	}
-	
+	public int getWannaPlay() {
+		return wannaPlay;
+	}
 	public void lastPlayedCardRead(){
-		lastPlayedCard = 10;
+		wannaPlay = 10;
 	}
 	
 	/**
@@ -48,6 +51,9 @@ public class Pirate {
 	 */
 	public void setlastPlayedCard(int i){
 		lastPlayedCard = i;
+	}
+	public void setWannaPlay(int cardNum) {
+		this.wannaPlay = cardNum;
 	}
 	
 	public Pirate(PirateColor color_, int cardAmount, Player owner_) {
@@ -180,7 +186,7 @@ public class Pirate {
 		if(cards[cardValue-1] != null){
 			if(cards[cardValue-1].isInHand()){
 				cards[cardValue-1].playCard();
-				lastPlayedCard = cards[cardValue-1].value;
+				wannaPlay = cards[cardValue-1].value;
 				for(int i = 0; i < availableCards.size(); i++){
 					if(availableCards.get(i).value == cards[cardValue-1].value)
 						availableCards.remove(i);

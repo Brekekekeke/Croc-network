@@ -25,6 +25,41 @@ public class Client {
 		gameState = new GameStateImpl();
 	}
 	
+	
+	public static void testUn(ComputeInterface comp) throws RemoteException {
+    	comp.newGame(gameState, 3);
+    	
+    	comp.joinGame(gameState, "LOLO", PirateColor.BLACK);
+    	comp.addBotPlayer(gameState, PirateColor.GREEN);
+    	
+    	gameState.setCardToPlay(1);
+    	
+    	comp.playCard(gameState);
+    	
+    	comp.startGame(gameState);
+    	System.out.println("Joueurs 0 :" + gameState.getPlayers()[0].getName());
+    	System.out.println("Dernier joueur "+ (gameState.getNbPlayerCo() + gameState.getNbBot() - 1) +" :" + gameState.getPlayers()[gameState.getNbPlayerCo() + gameState.getNbBot() - 1].getName());
+//    	comp.shutDown();
+//    	System.out.println("J'ai coupé le serveur");
+	}
+	public static void testDeux(ComputeInterface comp) throws RemoteException {
+    	comp.newGame(gameState, 3);
+    	
+    	comp.joinGame(gameState, "LALA", PirateColor.ORANGE);
+    	comp.addBotPlayer(gameState, PirateColor.GREEN);
+    	comp.addBotPlayer(gameState, PirateColor.PURPLE);
+    	System.out.println("lala");
+    	gameState.setCardToPlay(1);
+    	System.out.println("loulou");
+    	comp.startGame(gameState);
+    	System.out.println("lolo");
+    	comp.playCard(gameState);
+    	
+    	System.out.println("Joueurs 0 :" + gameState.getPlayers()[0].getName());
+    	System.out.println("Dernier joueur "+ (gameState.getNbPlayerCo() + gameState.getNbBot() - 1) +" :" + gameState.getPlayers()[gameState.getNbPlayerCo() + gameState.getNbBot() - 1].getName());
+//    	comp.shutDown();
+//    	System.out.println("J'ai coupé le serveur");
+	}
 	/** Connect to server, manipulate myself and asking things to the server.
 	 * @param args
 	 * @throws RemoteException
@@ -40,19 +75,10 @@ public class Client {
 		init();
 	    try {
 	    	ComputeInterface comp = connect("", serverPort);
-	    	System.out.println("BA");
-	    	comp.newGame(gameState, 5);
-	    	System.out.println("BE");
-	    	comp.joinGame(gameState, "LOLO", PirateColor.BLACK);
-	    	System.out.println("BI");
-	    	gameState.setCardToPlay(6);
-	    	System.out.println("BO");
-	    	comp.playCard(gameState);
-	    	System.out.println("BU");
-	    	System.out.println("Joueurs 0 :" + gameState.getPlayers()[0].getName());
-	    	System.out.println("Dernier joueur :" + gameState.getPlayers()[gameState.getNbPlayerCo() - 1].getName());
-//	    	comp.shutDown();
-//	    	System.out.println("J'ai coupé le serveur");
+	    	
+//	    	testUn(comp);
+	    	testDeux(comp);
+	    	
 	    	
 	    } catch (Exception e) {
 	    	System.err.println("ComputeCroc exception");
@@ -63,12 +89,12 @@ public class Client {
 	
 	public static ComputeInterface connect(String host, int serverPort) throws RemoteException, NotBoundException {
 		String name = "Compute";
-		System.out.println("bobo va connecter sur " + serverPort);
+//		System.out.println("bobo va connecter sur " + serverPort);
     	Registry registry = LocateRegistry.getRegistry(serverPort);
-    	System.out.println("baba");
+//    	System.out.println("baba");
 //    	Registry r = new Registry().connect("localhost", serverPort);
     	ComputeInterface comp = (ComputeInterface) registry.lookup(name);
-    	System.out.println("bibi");
+//    	System.out.println("bibi");
     	return comp;
 	}
 

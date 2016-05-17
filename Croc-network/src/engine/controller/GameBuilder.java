@@ -1,6 +1,8 @@
 package engine.controller;
 
 
+import java.rmi.RemoteException;
+
 import engine.exceptions.PlayerAmountException;
 import engine.models.Game;
 import engine.models.PirateColor;
@@ -110,7 +112,11 @@ public class GameBuilder {
 		Player[] players = new Player[playerCount];
 		if(playerCount == 3 || playerCount == 2){
 			for(int i = 0; i < playerCount; i++){
-				players[i] = new Player(cardamount,names[i],colors[i*2],colors[i*2+1],areBots[i]);
+				try {
+					players[i] = new Player(cardamount,names[i],colors[i*2],colors[i*2+1],areBots[i]);
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		else{
@@ -119,7 +125,11 @@ public class GameBuilder {
 			if(playerCount == 4)
 				cardamount = 5;
 			for(int i = 0; i < playerCount; i++){
-				players[i] = new Player(cardamount,names[i],colors[i],areBots[i]);
+				try {
+					players[i] = new Player(cardamount,names[i],colors[i],areBots[i]);
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
 				
 			}
 		}

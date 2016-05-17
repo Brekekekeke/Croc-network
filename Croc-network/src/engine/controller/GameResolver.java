@@ -1,9 +1,12 @@
 package engine.controller;
 
+import java.rmi.RemoteException;
+
 import engine.exceptions.NotEveryoneChoseCardException;
 import engine.models.Game;
 import engine.models.Pirate;
 import engine.models.Player;
+import net.headers.RemotePlayer;
 
 /**
  * Recognize win conditions depending on amount of players
@@ -38,7 +41,7 @@ public class GameResolver {
 		for(Pirate p: game.getPirateOrder()){
 			if(p.isAlive())
 				PirateCount++;
-			if(p.getLastPlayedCard()<8)
+			if(p.getWannaPlay() < 8)
 				CardCount++;
 		}
 		if(PirateCount != CardCount)
@@ -51,11 +54,11 @@ public class GameResolver {
 			getLowestCard = 10; //higher than highest card.
 			//find the lowest card, marks if the card was only played once.
 			for(Pirate p: game.getPirateOrder()){
-				if(p.getLastPlayedCard() < getLowestCard){
-					getLowestCard = p.getLastPlayedCard();
+				if(p.getWannaPlay() < getLowestCard){
+					getLowestCard = p.getWannaPlay();
 					isUnique = true;
 				}
-				else if(p.getLastPlayedCard() == getLowestCard){
+				else if(p.getWannaPlay() == getLowestCard){
 					isUnique = false;
 				}
 			}
@@ -63,7 +66,7 @@ public class GameResolver {
 			
 			if(isUnique){
 				for(int i = 0; i < game.getPirateOrder().size(); i++){
-					if(game.getPirateOrder().get(i).getLastPlayedCard() == getLowestCard){
+					if(game.getPirateOrder().get(i).getWannaPlay() == getLowestCard){
 						Pirate p = game.getPirateOrder().get(i);
 						p.lastPlayedCardRead();
 						game.getPirateOrder().remove(i);
@@ -75,7 +78,7 @@ public class GameResolver {
 			//don't move pirate, change card value to higher than 10 (read)
 			else{
 				for(Pirate p: game.getPirateOrder()){
-					if(p.getLastPlayedCard() == getLowestCard){
+					if(p.getWannaPlay() == getLowestCard){
 						p.lastPlayedCardRead();
 						PirateCount--;
 					}
@@ -109,15 +112,20 @@ public class GameResolver {
 	 */
 	public boolean victoryCondition(){
 		//for many player games
-		Player[] players = game.getPlayers();
-		Player tempWin = null;
+		RemotePlayer[] players = game.getPlayers();
+		RemotePlayer tempWin = null;
 		int deadCounter = 0;
 		if(game.getPlayers().length > 3){
 			for(int i = 0; i < players.length; i++){
-				if(!players[i].pirates[0].isAlive())
-					deadCounter++;
-				else
-					tempWin = players[i];
+				try {
+					if(!players[i].getPirate()[0].isAlive())
+						deadCounter++;
+					else
+						tempWin = players[i];
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			if(deadCounter + 1 == players.length){
 				game.setWinner(tempWin);
@@ -128,12 +136,17 @@ public class GameResolver {
 		else if(game.getPlayers().length == 3){
 			//could likely just check last pirate in pirateorder
 			for (int i = 0; i < players.length; i++){
-				for(int j = 0; j < players[i].pirates.length; j++){
-					if(!players[i].pirates[j].isAlive()){
-						game.setWinner(game.getPirateOrder().get(0).owner);
-						return true;
+				try {
+					for(int j = 0; j < players[i].getPirate().length; j++){
+						if(!players[i].getPirate()[j].isAlive()){
+							game.setWinner(game.getPirateOrder().get(0).owner);
+							return true;
+						}
+							
 					}
-						
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		}
@@ -142,11 +155,16 @@ public class GameResolver {
 			int winnerid = -1;
 			//could likely just check last pirate in pirateorder
 			for (int i = 0; i < players.length; i++){
-				for(int j = 0; j < players[i].pirates.length; j++){
-					if(!players[i].pirates[j].isAlive()){
-						winnerid = (i+1)%2; //if player 0 has a dead pirate choose player 1, if player 1 has a dead pirate choose 0
-						game.setWinner(game.getPlayers()[winnerid]);
+				try {
+					for(int j = 0; j < players[i].getPirate().length; j++){
+						if(!players[i].getPirate()[j].isAlive()){
+							winnerid = (i+1)%2; //if player 0 has a dead pirate choose player 1, if player 1 has a dead pirate choose 0
+							game.setWinner(game.getPlayers()[winnerid]);
+						}
 					}
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		}

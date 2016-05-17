@@ -14,6 +14,8 @@ public interface GameStateInterface extends Remote {
 	
 	public void setNbPlayersCo(int nbCo) throws RemoteException;
 	
+	public void setNbBot(int nbBot) throws RemoteException;
+	
 	/** Private client id (security patch)
 	 * @return
 	 * @throws RemoteException
@@ -72,7 +74,7 @@ public interface GameStateInterface extends Remote {
 	 * @throws RemoteException
 	 */
 //	public RemotePlayerImpl[] getPlayers();
-	public void setPlayers(RemotePlayerInterface[] players) throws RemoteException;
+	public void setPlayers(RemotePlayer[] players) throws RemoteException;
 	
 	
 	/** The card that client want to play. Will require step WAITCARD.

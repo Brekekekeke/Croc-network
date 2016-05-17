@@ -1,9 +1,12 @@
 package engine.controller;
 
+import java.rmi.RemoteException;
+
 import engine.exceptions.NotEveryoneChoseCardException;
 import engine.models.Game;
 import engine.models.Pirate;
 import engine.models.Player;
+import net.headers.RemotePlayer;
 
 public class GameSimulator {
 	GameBuilder gb;
@@ -17,7 +20,7 @@ public class GameSimulator {
 	 * and with a bot profile.
 	 * @return Gives the winning player.
 	 */
-	public Player PlayBotGame(){
+	public RemotePlayer PlayBotGame(){
 		int round = 0;
 		Boolean firstRound = true;
 		Game g = gb.createGame();
@@ -42,7 +45,12 @@ public class GameSimulator {
 			gr.victoryCondition();
 			System.out.println("round " + round++);
 		}
-		System.out.println("and the winner is: " + g.getWinner().name);
+		try {
+			System.out.println("and the winner is: " + g.getWinner().getName());
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return g.getWinner();
 	}
 	
