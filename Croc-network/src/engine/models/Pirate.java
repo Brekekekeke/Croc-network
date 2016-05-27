@@ -1,18 +1,19 @@
 package engine.models;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Random;
 
+import engine.controller.AIBox;
 import engine.exceptions.UnavailableCardException;
 
 /**
  * Holds data revelant to the Pirate.
- * @author sykefu
+ * @author CrocTeam
  *
  */
-public class Pirate {
-	
-	public static int maxCards = 7; 
+public class Pirate extends UnicastRemoteObject {
 	boolean leftLeg;
 	boolean rightLeg;
 	boolean leftArm;
@@ -23,26 +24,17 @@ public class Pirate {
 	//TODO: add unit tests to see is available cards always work correctly.
 	public ArrayList<Card> availableCards;
 	private int lastPlayedCard;
-	private int wannaPlay;
-	public boolean hand[] = new boolean[maxCards];
-	public Player owner;
-	
-	public boolean[] getHand() {
-		return this.hand;
-	}
-	
-	public void setHand(int card, boolean inHand) {
-		hand[card] = inHand;
-	}
+	public boolean hasPlayed;
+	final public Player owner;
+	private AIBox ai;
 	
 	public int getLastPlayedCard(){
 		return lastPlayedCard;
 	}
-	public int getWannaPlay() {
-		return wannaPlay;
-	}
+	
 	public void lastPlayedCardRead(){
-		wannaPlay = 10;
+		hasPlayed = false;
+		cards[lastPlayedCard-1].playCard();
 	}
 	
 	/**
@@ -52,16 +44,14 @@ public class Pirate {
 	public void setlastPlayedCard(int i){
 		lastPlayedCard = i;
 	}
-	public void setWannaPlay(int cardNum) {
-		this.wannaPlay = cardNum;
-	}
 	
-	public Pirate(PirateColor color_, int cardAmount, Player owner_) {
+	public Pirate(PirateColor color_, int cardAmount, Player owner_) throws RemoteException {
 		leftLeg = true;
 		leftArm = true;
 		rightArm = true;
 		rightLeg = true;
 		limbCount = 4;
+		hasPlayed = false;
 		color = color_;
 		cards = new Card[cardAmount];
 		availableCards = new ArrayList<Card>();
@@ -70,47 +60,36 @@ public class Pirate {
 		for(int i = 0; i < cards.length; i++)
 			availableCards.add(cards[i]);
 		owner = owner_;
-	}
-	
-	public Pirate(PirateColor color_, int cardAmount) {
-		leftLeg = true;
-		leftArm = true;
-		rightArm = true;
-		rightLeg = true;
-		limbCount = 4;
-		color = color_;
-		cards = new Card[cardAmount];
-		availableCards = new ArrayList<Card>();
-		for(int i = 1; i <= cardAmount; i++)
-			cards[i-1] = new Card(i);
-		for(int i = 0; i < cards.length; i++)
-			availableCards.add(cards[i]);
+		ai = new AIBox(this);
 	}
 	
 	public boolean isAlive(){
-		return (limbCount > 0);
+		if(limbCount > 0){
+			return true;
+		}
+		
+		return false;
 	}
 	
-	public PirateColor getColor(){
-		return color;
-//		switch(color){
-//		case WHITE:
-//			return "white";
-//		case RED:
-//			return "red";
-//		case GREEN:
-//			return "green";
-//		case PURPLE:
-//			return "purple";
-//		case ORANGE:
-//			return "orange";
-//		case YELLOW:
-//			return "yellow";
-//		case BLACK:
-//			return "black";
-//		default:
-//			return "undefined color";
-//		}
+	public String getColor(){
+		switch(color){
+		case WHITE:
+			return "white";
+		case RED:
+			return "red";
+		case GREEN:
+			return "green";
+		case PURPLE:
+			return "purple";
+		case ORANGE:
+			return "orange";
+		case YELLOW:
+			return "yellow";
+		case BLACK:
+			return "black";
+		default:
+			return "undefined color";
+		}
 	}
 	
 	public boolean popLeftLeg(){
@@ -185,8 +164,8 @@ public class Pirate {
 	public int playCard(int cardValue) throws UnavailableCardException{
 		if(cards[cardValue-1] != null){
 			if(cards[cardValue-1].isInHand()){
-				cards[cardValue-1].playCard();
-				wannaPlay = cards[cardValue-1].value;
+				hasPlayed = true;
+				lastPlayedCard = cards[cardValue-1].value;
 				for(int i = 0; i < availableCards.size(); i++){
 					if(availableCards.get(i).value == cards[cardValue-1].value)
 						availableCards.remove(i);
@@ -229,10 +208,23 @@ public class Pirate {
 	 * method to make the bot choose a card, random card available for now.
 	 */
 	public void botCardChooser(){
+		ai.increasingValuation();
+		int maxVal = 0;
+		for(int i = 0; i < ai.val.size(); i++){
+			maxVal += ai.val.get(i);
+		}
 		Random rand = new Random();
-		int cardChosen = rand.nextInt(availableCards.size());
+		int randChosen = rand.nextInt(maxVal);
+		int counter=0;
+		int loop=0;
+		while(randChosen >= counter){
+			counter+=ai.val.get(loop);
+			if(randChosen >= counter)
+				loop++;
+		}
+		ai.val = new ArrayList<Integer>();
 		try {
-			playCard(availableCards.get(cardChosen).value); //to get value and not slot in array
+			playCard(availableCards.get(loop).value); //to get value and not slot in array
 		} catch (UnavailableCardException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -4,12 +4,12 @@ package engine.controller;
 import java.rmi.RemoteException;
 
 import engine.exceptions.PlayerAmountException;
-import engine.models.Game;
+import engine.models.CrGame;
 import engine.models.PirateColor;
 import engine.models.Player;
 /**
  * Used to build a game and contains data to initialize another one at later time.
- * @author sykefu
+ * @author CrocTeam
  *
  */
 public class GameBuilder {
@@ -38,7 +38,11 @@ public class GameBuilder {
 	
 	Boolean[] areBots;
 	
+	Boolean[] areRemotes;
+
 	private int chosenBotCount;
+
+	private int chosenRemoteCount;
 	
 	//to pair with a selection of player amount in gui
 	public GameBuilder(int playerCount_)
@@ -50,15 +54,15 @@ public class GameBuilder {
 			chosenBotCount = 0;
 			chosenColorCount = 0;
 			chosenNameCount = 0;
+			chosenRemoteCount = 0;
+			areBots = new Boolean[playerCount_];
+			names = new String[playerCount_];
+			areRemotes = new Boolean[playerCount_];
 			if(playerCount_ > 3){
-				names = new String[playerCount_];
 				colors = new PirateColor[playerCount_];
-				areBots = new Boolean[playerCount_];
 			}
 			else{
-				names = new String[playerCount_];
 				colors = new PirateColor[playerCount_*2];
-				areBots = new Boolean[playerCount_];
 			}
 		}
 	}
@@ -86,6 +90,11 @@ public class GameBuilder {
 		chosenBotCount++;
 	}
 	
+	public void chooseRemote(Boolean isRemote){
+		areRemotes[chosenRemoteCount] = isRemote;
+		chosenRemoteCount++;
+	}
+	
 	//add a screen for each player to pick a color (and a name maybe if same screen)
 	//2 colors needed per player if it's a 3 or 2 player game.
 	public boolean chooseColor(PirateColor color){
@@ -107,14 +116,15 @@ public class GameBuilder {
 	 * Creates the player array needed to play a round of Croc! contains the cards, pirates and name of players
 	 * @return The player array for the next round of Croc!
 	 */
-	public Game createGame(){
+	public CrGame createGame(){
 		int cardamount = 7;
 		Player[] players = new Player[playerCount];
 		if(playerCount == 3 || playerCount == 2){
 			for(int i = 0; i < playerCount; i++){
 				try {
-					players[i] = new Player(cardamount,names[i],colors[i*2],colors[i*2+1],areBots[i]);
+					players[i] = new Player(cardamount,names[i],colors[i*2],colors[i*2+1],areBots[i],areRemotes[i]);
 				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -126,15 +136,22 @@ public class GameBuilder {
 				cardamount = 5;
 			for(int i = 0; i < playerCount; i++){
 				try {
-					players[i] = new Player(cardamount,names[i],colors[i],areBots[i]);
+					players[i] = new Player(cardamount,names[i],colors[i],areBots[i],areRemotes[i]);
 				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
 			}
 		}
 		
-		return new Game(players, chosenColorCount);
+		try {
+			return new CrGame(players, chosenColorCount);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 

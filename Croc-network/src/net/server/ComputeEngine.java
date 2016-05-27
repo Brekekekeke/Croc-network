@@ -8,12 +8,11 @@ import java.util.Random;
 
 import engine.controller.GameResolver;
 import engine.exceptions.NotEveryoneChoseCardException;
-import engine.models.Game;
+import engine.models.CrGame;
 import engine.models.PirateColor;
 import engine.models.Player;
 import net.headers.ComputeInterface;
 import net.headers.GameStateInterface;
-import net.headers.RemotePlayer;
 import net.headers.ServerError;
 import net.headers.ServerStep;
 
@@ -31,11 +30,11 @@ public class ComputeEngine implements ComputeInterface {
 	private int nbBot = 0;
 	private int nbCard;
 	
-	private RemotePlayer players[] = new RemotePlayer[maxPlayers];
+	private Player players[] = new Player[maxPlayers];
 //	private Player gamePlayers[]; 
 	private long IDs[] = new long[maxPlayers];
 	
-	private Game game;
+	private CrGame game;
 	private GameResolver gameResolver;
 	private ServerStep myStep;
 	
@@ -92,7 +91,7 @@ public class ComputeEngine implements ComputeInterface {
 		this.nbCard = getNbSlot();
 	}
 
-	public RemotePlayer[] getPlayers() {
+	public Player[] getPlayers() {
 //		RemotePlayer result[] = new RemotePlayer[nbPlayers];
 //		for (int i = 0; i < nbPlayers; i++) {
 //			System.out.println("in for");
@@ -111,7 +110,7 @@ public class ComputeEngine implements ComputeInterface {
 //		return result;
 	}
 
-	public void setPlayers(RemotePlayer[] players) {
+	public void setPlayers(Player[] players) {
 		this.players = players;
 	}
 
@@ -123,11 +122,11 @@ public class ComputeEngine implements ComputeInterface {
 		IDs[indice] = id;
 	}
 	
-	public Game getGame() {
+	public CrGame getGame() {
 		return game;
 	}
 
-	public void setGame(Game game) {
+	public void setGame(CrGame game) {
 		this.game = game;
 	}
 
@@ -142,22 +141,22 @@ public class ComputeEngine implements ComputeInterface {
 	
 //	 Internal methods
 	
-	private int getIdIndice(long id) {
-		for (int i = 0; i < nbSlot; i++) {
-			if (IDs[i] == id) {
-				return i;
-			}
-		}
-		return -1;
-	}
+//	private int getIdIndice(long id) {
+//		for (int i = 0; i < nbSlot; i++) {
+//			if (IDs[i] == id) {
+//				return i;
+//			}
+//		}
+//		return -1;
+//	}
 	
 	private boolean canPlay(long id, int cardToPlay) {
-		int i = getIdIndice(id);
-		try {
-			return players[i].getPirate()[0].getHand()[cardToPlay];
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		}
+//		int i = getIdIndice(id);
+//		try {
+//			return players[i].getPirate()[0].getHand()[cardToPlay];
+//		} catch (RemoteException e) {
+//			e.printStackTrace();
+//		}
 		System.out.println("ComputeEngine.canPlay ne marche pas");
 		return false;
 	}
@@ -174,26 +173,26 @@ public class ComputeEngine implements ComputeInterface {
 	
 	private boolean alreadyUsedColor(PirateColor expectedColor) {
 		for (int i = 0; i < (nbPlayersCo + nbBot); i++) {
-			try {
-				if (players[i].getColor() == expectedColor) {
-					return true;
-				}
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				if (players[i].getColor() == expectedColor) {
+//					return true;
+//				}
+//			} catch (RemoteException e) {
+//				e.printStackTrace();
+//			}
 		}
 		return false;
 	}
 
 	private boolean alreadyUsedName(String expectedName) {
 		for (int i = 0; i < (nbPlayersCo + nbBot); i++) {
-			try {
-				if (players[i].getName() == expectedName) {
-					return true;
-				}
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				if (players[i].getName() == expectedName) {
+//					return true;
+//				}
+//			} catch (RemoteException e) {
+//				e.printStackTrace();
+//			}
 		}
 		return false;
 	}
@@ -201,7 +200,7 @@ public class ComputeEngine implements ComputeInterface {
 	private void configureGame() {
 		setMyStep(ServerStep.PROCESSING);
 		System.out.println("CreateGame " + getNbSlot());
-		game = new Game(getPlayers(), getNbSlot());
+//		game = new CrGame(getPlayers(), getNbSlot());
 		System.out.println("CreateD Game");
 	}
 	
@@ -213,13 +212,13 @@ public class ComputeEngine implements ComputeInterface {
 		try {
 			gameResolver.roundResolve();
 			for (int i = 0; i < nbSlot; i++) {
-				try {
-					players[i].getPirate()[0].setlastPlayedCard(players[i].getPirate()[0].getWannaPlay());
-					players[i].getPirate()[0].lastPlayedCardRead();
-				} catch (RemoteException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+//				try {
+//					players[i].getPirate()[0].setlastPlayedCard(players[i].getPirate()[0].getWannaPlay());
+//					players[i].getPirate()[0].lastPlayedCardRead();
+//				} catch (RemoteException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 			}
 			
 		} catch (NotEveryoneChoseCardException e) {
@@ -353,7 +352,7 @@ public class ComputeEngine implements ComputeInterface {
 //				p = new RemotePlayerImpl (getNbCard(), expectedName, expectedColor, false);
 				
 				//TODO remove DEBUG >
-				p.getPirate()[0].setHand(6, true);
+//				p.getPirate()[0].setHand(6, true);
 				// </debug
 			} catch (RemoteException e) {
 				e.printStackTrace();
@@ -374,7 +373,7 @@ public class ComputeEngine implements ComputeInterface {
 		try {
 			client.setNbBot(nbBot);
 			client.setNbPlayersCo(nbPlayersCo);
-			client.setPlayers(getPlayers());
+//			client.setPlayers(getPlayers());
 			client.setStep(getMyStep());
 		} catch (RemoteException e) {
 			e.printStackTrace();
@@ -417,13 +416,13 @@ public class ComputeEngine implements ComputeInterface {
 
 			long id = generateID();
 			
-			RemotePlayer bot = null;
+			Player bot = null;
 //			Player gp = new Player(getNbCard(), "IAMBOT " + getNbBot(), expectedColor, true);
-			try {
-				bot = new Player(getNbCard(), "Bot " + nbBot, expectedColor, true);
-			} catch (RemoteException e1) {
-				e1.printStackTrace();
-			}
+//			try {
+//				bot = new Player(getNbCard(), "Bot " + nbBot, expectedColor, true);
+//			} catch (RemoteException e1) {
+//				e1.printStackTrace();
+//			}
 			for (int i = 0; i < nbSlot; i++) {
 				if (players[i] == null) {
 					System.out.println("Bot Ajouté");
@@ -439,14 +438,14 @@ public class ComputeEngine implements ComputeInterface {
 					break;
 				}
 			}
-			try {
-				client.setPlayers(getPlayers());
-				client.setNbPlayersCo(nbPlayersCo);
-				client.setNbBot(nbBot);
-				client.setStep(getMyStep());
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				client.setPlayers(getPlayers());
+//				client.setNbPlayersCo(nbPlayersCo);
+//				client.setNbBot(nbBot);
+//				client.setStep(getMyStep());
+//			} catch (RemoteException e) {
+//				e.printStackTrace();
+//			}
 		}
 		System.out.println("On est " + (nbPlayersCo + nbBot) + " joueurs sur " + nbSlot);
 		System.out.println("End of add bot");
@@ -463,9 +462,9 @@ public class ComputeEngine implements ComputeInterface {
 			System.out.println("Ok pour start");
 			startGame();
 			System.out.println("HERE");
-			while (gameResolver.getGame().getWinner() == null) {
-				resolveRound();			
-			}
+//			while (gameResolver.getGame().getWinner() == null) {
+//				resolveRound();			
+//			}
 		} else {
 			try {
 				client.setError(ServerError.NOTREADY);
@@ -500,13 +499,13 @@ public class ComputeEngine implements ComputeInterface {
 		int wannaPlay = -1;
 		long idClient = -1;
 		String clientName = "";
-		try {
-			wannaPlay = client.getGardToPlay();
-			idClient = client.getClientID();
-			clientName = players[getIdIndice(idClient)].getName();
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			wannaPlay = client.getGardToPlay();
+//			idClient = client.getClientID();
+//			clientName = players[getIdIndice(idClient)].getName();
+//		} catch (RemoteException e) {
+//			e.printStackTrace();
+//		}
 		
 		System.out.println("Le client " + clientName + " demande à jouer la carte " + wannaPlay);
 		
@@ -519,15 +518,15 @@ public class ComputeEngine implements ComputeInterface {
 			}
 		}
 		else if (canPlay(idClient, wannaPlay)) {
-			try {
-				client.setLastPlayedCard(client.getGardToPlay());
-				players[getIdIndice((int)idClient)].getPirate()[0].setWannaPlay(wannaPlay);
-				
-				System.out.println("Ok pour jouer la carte" + client.getGardToPlay());
-				client.setError(ServerError.NOERROR);
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				client.setLastPlayedCard(client.getGardToPlay());
+//				players[getIdIndice((int)idClient)].getPirate()[0].setWannaPlay(wannaPlay);
+//				
+//				System.out.println("Ok pour jouer la carte" + client.getGardToPlay());
+//				client.setError(ServerError.NOERROR);
+//			} catch (RemoteException e) {
+//				e.printStackTrace();
+//			}
 			//TODO enregistrer l'info;
 			
 		} else {
@@ -545,14 +544,14 @@ public class ComputeEngine implements ComputeInterface {
 		}
 		boolean ready = true;
 		for (int i = 0; i < nbSlot; i++) {
-			try {
-				if (players[i] == null || players[i].getPirate()[0].getWannaPlay() == 10 || players[i].getPirate()[0].getWannaPlay() == -1) {
-					ready = false;
-				}
-			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//			try {
+//				if (players[i] == null || players[i].getPirate()[0].getWannaPlay() == 10 || players[i].getPirate()[0].getWannaPlay() == -1) {
+//					ready = false;
+//				}
+//			} catch (RemoteException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		}
 		if (ready) {
 			setMyStep(ServerStep.READY);
@@ -564,18 +563,18 @@ public class ComputeEngine implements ComputeInterface {
 	 * @see net.headers.ComputeInterface#updateMe(net.headers.GameStateInterface)
 	 */
 	public GameStateInterface updateMe(GameStateInterface client) {
-		try {
-//			client.setClientId(id);
-//			client.setClientName(name);
-//			client.setClientColor(color);
-			client.setStep(getMyStep());
-			client.setError(ServerError.NOERROR);
-			client.setNbPlayers(getNbSlot());
-			client.setNbCards(getNbCard());
-			client.setPlayers(getPlayers());
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		}
+//		try {
+////			client.setClientId(id);
+////			client.setClientName(name);
+////			client.setClientColor(color);
+//			client.setStep(getMyStep());
+//			client.setError(ServerError.NOERROR);
+//			client.setNbPlayers(getNbSlot());
+//			client.setNbCards(getNbCard());
+//			client.setPlayers(getPlayers());
+//		} catch (RemoteException e) {
+//			e.printStackTrace();
+//		}
 		return client;
 	}
 	/* (non-Javadoc)

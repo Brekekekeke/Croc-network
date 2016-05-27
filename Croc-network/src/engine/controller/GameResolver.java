@@ -1,33 +1,32 @@
 package engine.controller;
 
-import java.rmi.RemoteException;
-
 import engine.exceptions.NotEveryoneChoseCardException;
-import engine.models.Game;
+import engine.models.CrGame;
 import engine.models.Pirate;
 import engine.models.Player;
-import net.headers.RemotePlayer;
 
 /**
  * Recognize win conditions depending on amount of players
  * and resolves game turns.
- * @author sykefu
+ * @author CrocTeam
  *
  */
 public class GameResolver {
-	Game game;
-	public GameResolver(Game game_){
+	CrGame game;
+	public GameResolver(CrGame game_){
 		game = game_;
-	}
-	
-	public Game getGame() {
-		return game;
 	}
 	/**
 	 *  Shuffle pirates in piratesOrder ArrayList.
 	 */
 	public void gameInit(){
-		//just take 2 random pirate and swap, do it a few times. random enough.
+		Pirate tempSwap;
+		for(int i = 0; i<30;i++){
+			int j = (int) Math.round(Math.random()*(game.getPirateOrder().size()-1));
+			tempSwap = game.getPirateOrder().get(j);
+			game.getPirateOrder().remove(j);
+			game.getPirateOrder().add(game.getPirateOrder().size(), tempSwap);
+		}
 	}
 	/**
 	 * Gives out the new order for the pirate.
@@ -41,7 +40,7 @@ public class GameResolver {
 		for(Pirate p: game.getPirateOrder()){
 			if(p.isAlive())
 				PirateCount++;
-			if(p.getWannaPlay() < 8)
+			if(p.hasPlayed)
 				CardCount++;
 		}
 		if(PirateCount != CardCount)
@@ -54,11 +53,11 @@ public class GameResolver {
 			getLowestCard = 10; //higher than highest card.
 			//find the lowest card, marks if the card was only played once.
 			for(Pirate p: game.getPirateOrder()){
-				if(p.getWannaPlay() < getLowestCard){
-					getLowestCard = p.getWannaPlay();
+				if(p.getLastPlayedCard() < getLowestCard && p.hasPlayed){
+					getLowestCard = p.getLastPlayedCard();
 					isUnique = true;
 				}
-				else if(p.getWannaPlay() == getLowestCard){
+				else if(p.getLastPlayedCard() == getLowestCard){
 					isUnique = false;
 				}
 			}
@@ -66,7 +65,7 @@ public class GameResolver {
 			
 			if(isUnique){
 				for(int i = 0; i < game.getPirateOrder().size(); i++){
-					if(game.getPirateOrder().get(i).getWannaPlay() == getLowestCard){
+					if(game.getPirateOrder().get(i).getLastPlayedCard() == getLowestCard){
 						Pirate p = game.getPirateOrder().get(i);
 						p.lastPlayedCardRead();
 						game.getPirateOrder().remove(i);
@@ -78,7 +77,7 @@ public class GameResolver {
 			//don't move pirate, change card value to higher than 10 (read)
 			else{
 				for(Pirate p: game.getPirateOrder()){
-					if(p.getWannaPlay() == getLowestCard){
+					if(p.getLastPlayedCard() == getLowestCard){
 						p.lastPlayedCardRead();
 						PirateCount--;
 					}
@@ -102,7 +101,7 @@ public class GameResolver {
 		}
 		//recover cards if only 2 left to any pirate
 		for(Pirate p: game.getPirateOrder()){
-			if(p.availableCards.size() <= 2)
+			if(p.availableCards.size() < 2)
 				p.RecoverHand();
 		}
 	}
@@ -112,20 +111,15 @@ public class GameResolver {
 	 */
 	public boolean victoryCondition(){
 		//for many player games
-		RemotePlayer[] players = game.getPlayers();
-		RemotePlayer tempWin = null;
+		Player[] players = game.getPlayers();
+		Player tempWin = null;
 		int deadCounter = 0;
 		if(game.getPlayers().length > 3){
 			for(int i = 0; i < players.length; i++){
-				try {
-					if(!players[i].getPirate()[0].isAlive())
-						deadCounter++;
-					else
-						tempWin = players[i];
-				} catch (RemoteException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				if(!players[i].pirates[0].isAlive())
+					deadCounter++;
+				else
+					tempWin = players[i];
 			}
 			if(deadCounter + 1 == players.length){
 				game.setWinner(tempWin);
@@ -136,17 +130,12 @@ public class GameResolver {
 		else if(game.getPlayers().length == 3){
 			//could likely just check last pirate in pirateorder
 			for (int i = 0; i < players.length; i++){
-				try {
-					for(int j = 0; j < players[i].getPirate().length; j++){
-						if(!players[i].getPirate()[j].isAlive()){
-							game.setWinner(game.getPirateOrder().get(0).owner);
-							return true;
-						}
-							
+				for(int j = 0; j < players[i].pirates.length; j++){
+					if(!players[i].pirates[j].isAlive()){
+						game.setWinner(game.getPirateOrder().get(0).owner);
+						return true;
 					}
-				} catch (RemoteException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+						
 				}
 			}
 		}
@@ -155,16 +144,11 @@ public class GameResolver {
 			int winnerid = -1;
 			//could likely just check last pirate in pirateorder
 			for (int i = 0; i < players.length; i++){
-				try {
-					for(int j = 0; j < players[i].getPirate().length; j++){
-						if(!players[i].getPirate()[j].isAlive()){
-							winnerid = (i+1)%2; //if player 0 has a dead pirate choose player 1, if player 1 has a dead pirate choose 0
-							game.setWinner(game.getPlayers()[winnerid]);
-						}
+				for(int j = 0; j < players[i].pirates.length; j++){
+					if(!players[i].pirates[j].isAlive()){
+						winnerid = (i+1)%2; //if player 0 has a dead pirate choose player 1, if player 1 has a dead pirate choose 0
+						game.setWinner(game.getPlayers()[winnerid]);
 					}
-				} catch (RemoteException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
 			}
 		}

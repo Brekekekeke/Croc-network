@@ -114,11 +114,11 @@ public class GameStateImpl extends UnicastRemoteObject implements GameStateInter
 	}
 	
 	public boolean[] getThisPlayerHand(int playerNum) {
-		try {
-			return players[playerNum].getPirate()[0].getHand();
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			return players[playerNum].getPirate()[0].getHand();
+//		} catch (RemoteException e) {
+//			e.printStackTrace();
+//		}
 		System.out.println("Probleme dans getThisPlayerHand");
 		return null;
 	}
