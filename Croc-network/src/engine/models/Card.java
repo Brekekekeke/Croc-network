@@ -20,6 +20,6 @@ public class Card {
 	public boolean isInHand(){
 		return inHand;
 	}
-	//
+	////
 
 }
