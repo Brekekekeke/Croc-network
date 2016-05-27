@@ -25,7 +25,7 @@ public interface ComputeInterface extends Remote {
 	 * @return Updated GameState.
 	 * @throws RemoteException
 	 */
-	public GameStateInterface joinGame(GameStateInterface client, String expectedName, PirateColor expectedColor) throws RemoteException;
+	public long joinGame(GameStateInterface client, String expectedName, PirateColor expectedColor) throws RemoteException;
 	
 	
 	/** Adding a bot player in the game. Will require WAITCO.
@@ -52,7 +52,7 @@ public interface ComputeInterface extends Remote {
 	 * @param client 
 	 * @throws RemoteException
 	 */
-	public GameStateInterface playCard (GameStateInterface client) throws RemoteException;
+	public GameStateInterface playCard (long id, GameStateInterface client) throws RemoteException;
 	
 	/** Ask for a fully updated GameState
 	 * @param client

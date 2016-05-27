@@ -29,12 +29,12 @@ public class Client {
 	public static void testUn(ComputeInterface comp) throws RemoteException {
     	comp.newGame(gameState, 3);
     	
-    	comp.joinGame(gameState, "LOLO", PirateColor.BLACK);
+    	long myID = comp.joinGame(gameState, "LOLO", PirateColor.BLACK);
     	comp.addBotPlayer(gameState, PirateColor.GREEN);
     	
     	gameState.setCardToPlay(1);
     	
-    	comp.playCard(gameState);
+    	comp.playCard(myID, gameState);
     	
     	comp.startGame(gameState);
     	System.out.println("Joueurs 0 :" + gameState.getPlayers()[0].getName());
@@ -45,15 +45,15 @@ public class Client {
 	public static void testDeux(ComputeInterface comp) throws RemoteException {
     	comp.newGame(gameState, 3);
     	
-    	comp.joinGame(gameState, "LALA", PirateColor.ORANGE);
+    	long myID = comp.joinGame(gameState, "LALA", PirateColor.ORANGE);
     	comp.addBotPlayer(gameState, PirateColor.GREEN);
     	comp.addBotPlayer(gameState, PirateColor.PURPLE);
-    	System.out.println("lala");
+    	System.out.println("setCardToPlay");
     	gameState.setCardToPlay(1);
-    	System.out.println("loulou");
+    	System.out.println("startGame");
     	comp.startGame(gameState);
-    	System.out.println("lolo");
-    	comp.playCard(gameState);
+    	System.out.println("playCard");
+    	comp.playCard(myID, gameState);
     	
     	System.out.println("Joueurs 0 :" + gameState.getPlayers()[0].getName());
     	System.out.println("Dernier joueur "+ (gameState.getNbPlayerCo() + gameState.getNbBot() - 1) +" :" + gameState.getPlayers()[gameState.getNbPlayerCo() + gameState.getNbBot() - 1].getName());

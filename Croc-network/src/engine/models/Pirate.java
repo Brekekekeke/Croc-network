@@ -14,6 +14,10 @@ import engine.exceptions.UnavailableCardException;
  *
  */
 public class Pirate extends UnicastRemoteObject {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	boolean leftLeg;
 	boolean rightLeg;
 	boolean leftArm;
@@ -224,7 +228,9 @@ public class Pirate extends UnicastRemoteObject {
 		}
 		ai.val = new ArrayList<Integer>();
 		try {
+			System.out.println("Bot");
 			playCard(availableCards.get(loop).value); //to get value and not slot in array
+			System.out.println("bot2");
 		} catch (UnavailableCardException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

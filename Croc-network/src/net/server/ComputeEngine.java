@@ -9,6 +9,7 @@ import java.util.Random;
 import engine.controller.GameResolver;
 import engine.exceptions.NotEveryoneChoseCardException;
 import engine.models.CrGame;
+import engine.models.Pirate;
 import engine.models.PirateColor;
 import engine.models.Player;
 import net.headers.ComputeInterface;
@@ -30,7 +31,7 @@ public class ComputeEngine implements ComputeInterface {
 	private int nbBot = 0;
 	private int nbCard;
 	
-	private Player players[] = new Player[maxPlayers];
+	private Player players[];
 //	private Player gamePlayers[]; 
 	private long IDs[] = new long[maxPlayers];
 	
@@ -119,6 +120,7 @@ public class ComputeEngine implements ComputeInterface {
 //	}
 	
 	private void setID(int indice, long id) {
+		System.out.println("indice " + indice + " id " + id);
 		IDs[indice] = id;
 	}
 	
@@ -141,32 +143,28 @@ public class ComputeEngine implements ComputeInterface {
 	
 //	 Internal methods
 	
-//	private int getIdIndice(long id) {
-//		for (int i = 0; i < nbSlot; i++) {
-//			if (IDs[i] == id) {
-//				return i;
-//			}
-//		}
-//		return -1;
-//	}
+	private int getIdIndice(long id) {
+		
+//		System.out.println(nbSlot + "wanted " + id);
+		for (int i = 0; i < nbSlot; i++) {
+//			System.out.println(IDs[i]);
+			if (((Long)IDs[i]).equals(id)) {
+				return i;
+			}
+		}
+		System.out.println("ComputeEngine.GetIdIndice bug");
+		return -1;
+	}
 	
 	private boolean canPlay(long id, int cardToPlay) {
-//		int i = getIdIndice(id);
-//		try {
-//			return players[i].getPirate()[0].getHand()[cardToPlay];
-//		} catch (RemoteException e) {
-//			e.printStackTrace();
-//		}
-		System.out.println("ComputeEngine.canPlay ne marche pas");
-		return false;
+		int i = getIdIndice(id);
+		return players[i].pirates[0].cards[cardToPlay].isInHand();
 	}
 	
 	private void startGame() {
 		setMyStep(ServerStep.PROCESSING);
-		System.out.println("OULALA");
 		configureGame();
 		gameResolver = new GameResolver(game);
-		System.out.println("OLE");
 		gameResolver.gameInit();
 		resolveRound();
 	}
@@ -200,7 +198,12 @@ public class ComputeEngine implements ComputeInterface {
 	private void configureGame() {
 		setMyStep(ServerStep.PROCESSING);
 		System.out.println("CreateGame " + getNbSlot());
-//		game = new CrGame(getPlayers(), getNbSlot());
+		try {
+			game = new CrGame(getPlayers(), 1);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		System.out.println("CreateD Game");
 	}
 	
@@ -209,6 +212,12 @@ public class ComputeEngine implements ComputeInterface {
 //			Attente active, pas beau!
 		}
 //		setMyStep(ServerStep.PROCESSING);
+		for(Player p : game.getPlayers()){
+			if(p.isBot){
+//				System.out.println("Bot Found");
+				p.pirates[0].botCardChooser();
+			}
+		}
 		try {
 			gameResolver.roundResolve();
 			for (int i = 0; i < nbSlot; i++) {
@@ -265,6 +274,7 @@ public class ComputeEngine implements ComputeInterface {
 	@Override
 	public GameStateInterface newGame(GameStateInterface client, int nbSlot) {
 		System.out.println("Demande d'ouverture de partie pour " + nbSlot + " joueurs");
+		players = new Player[nbSlot];
 		if (getMyStep() == ServerStep.CLOSED) {
 			System.out.println("Ouverture d'une partie à " + nbSlot + " joueurs.");
 //			gamePlayers = new Player[nbPlayers];
@@ -297,7 +307,7 @@ public class ComputeEngine implements ComputeInterface {
 	 * @see net.headers.ComputeInterface#joinGame(net.headers.GameStateInterface, java.lang.String, engine.models.PirateColor)
 	 */
 	@Override
-	public GameStateInterface joinGame(GameStateInterface client, String expectedName, PirateColor expectedColor) {
+	public long joinGame(GameStateInterface client, String expectedName, PirateColor expectedColor) {
 		System.out.println(expectedName + " demande a rejoindre");
 		
 		long id = generateID();
@@ -361,7 +371,7 @@ public class ComputeEngine implements ComputeInterface {
 				if (players[i] == null) {
 					players[i] = p;
 //					gamePlayers[i] = gp;
-					setID(i, id);
+					setID(nbPlayersCo, id);
 					nbPlayersCo += 1;
 					break;
 				}
@@ -380,7 +390,7 @@ public class ComputeEngine implements ComputeInterface {
 		}
 		System.out.println("On est " + (nbPlayersCo + nbBot) + " joueurs sur " + nbSlot);
 		System.out.println("End of join game");
-		return client;
+		return id;
 	}
 	
 	/* (non-Javadoc)
@@ -414,21 +424,26 @@ public class ComputeEngine implements ComputeInterface {
 		} else {
 			System.out.println("Ajout d'un bot");
 
-			long id = generateID();
+//			long id = generateID();
 			
 			Player bot = null;
-//			Player gp = new Player(getNbCard(), "IAMBOT " + getNbBot(), expectedColor, true);
-//			try {
-//				bot = new Player(getNbCard(), "Bot " + nbBot, expectedColor, true);
-//			} catch (RemoteException e1) {
-//				e1.printStackTrace();
-//			}
+			try {
+				Player gp = new Player(getNbCard(), "IAMBOT " + getNbBot(), expectedColor, true);
+			} catch (RemoteException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+			try {
+				bot = new Player(getNbCard(), "Bot " + nbBot, expectedColor, true);
+			} catch (RemoteException e1) {
+				e1.printStackTrace();
+			}
 			for (int i = 0; i < nbSlot; i++) {
 				if (players[i] == null) {
 					System.out.println("Bot Ajouté");
 					players[i] = bot;
 //					gamePlayers[i] = gp;
-					setID(i, id);
+					setID(i, -1);
 					nbBot += 1;
 					try {
 						client.setError(ServerError.NOERROR);
@@ -461,7 +476,6 @@ public class ComputeEngine implements ComputeInterface {
 			setMyStep(ServerStep.READY);
 			System.out.println("Ok pour start");
 			startGame();
-			System.out.println("HERE");
 //			while (gameResolver.getGame().getWinner() == null) {
 //				resolveRound();			
 //			}
@@ -495,17 +509,16 @@ public class ComputeEngine implements ComputeInterface {
 	 * @see net.headers.ComputeInterface#playCard(net.headers.GameStateInterface)
 	 */
 	@Override
-	public GameStateInterface playCard(GameStateInterface client) {
+	public GameStateInterface playCard(long id, GameStateInterface client) {
 		int wannaPlay = -1;
-		long idClient = -1;
+		long idClient = id;
 		String clientName = "";
-//		try {
-//			wannaPlay = client.getGardToPlay();
-//			idClient = client.getClientID();
-//			clientName = players[getIdIndice(idClient)].getName();
-//		} catch (RemoteException e) {
-//			e.printStackTrace();
-//		}
+		try {
+			wannaPlay = client.getGardToPlay();
+			clientName = players[getIdIndice(idClient)].name;
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 		
 		System.out.println("Le client " + clientName + " demande à jouer la carte " + wannaPlay);
 		
@@ -518,15 +531,14 @@ public class ComputeEngine implements ComputeInterface {
 			}
 		}
 		else if (canPlay(idClient, wannaPlay)) {
-//			try {
-//				client.setLastPlayedCard(client.getGardToPlay());
-//				players[getIdIndice((int)idClient)].getPirate()[0].setWannaPlay(wannaPlay);
-//				
-//				System.out.println("Ok pour jouer la carte" + client.getGardToPlay());
-//				client.setError(ServerError.NOERROR);
-//			} catch (RemoteException e) {
-//				e.printStackTrace();
-//			}
+			try {
+				client.setLastPlayedCard(client.getGardToPlay());
+				players[getIdIndice(idClient)].pirates[0].setlastPlayedCard(wannaPlay);
+				System.out.println("Ok pour jouer la carte" + client.getGardToPlay());
+				client.setError(ServerError.NOERROR);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
 			//TODO enregistrer l'info;
 			
 		} else {
