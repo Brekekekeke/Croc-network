@@ -1,6 +1,6 @@
 package game;
 
-import com.badlogic.gdx.Game;
+//import com.badlogic.gdx.Game;
 
 public class CrocGame extends Game {
 	
